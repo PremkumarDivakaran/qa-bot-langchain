@@ -66,7 +66,7 @@ npm install
 
 ### 2. Create Vector Index (First Time Setup)
 ```bash
-npm run create-user-story-index
+npm run create-user-story-index  # Provides steps to manually create index in MongoDB Atlas
 ```
 
 ### 3. Start the Application
@@ -105,7 +105,7 @@ npm run stop:frontend    # Stop UI server
 ```bash
 npm run ingest:user-stories       # Ingest user stories (append)
 npm run ingest:user-stories:clear # Ingest user stories (clear existing)
-npm run create-user-story-index   # Create vector search index
+npm run create-user-story-index   # Get steps to manually create vector search index
 npm run verify-user-story-index   # Verify vector index exists
 ```
 
@@ -295,6 +295,7 @@ qa-bot-langchain/
 2. **Vector search failing**: Verify vector index exists with `npm run verify-user-story-index`
 3. **No similar stories found**: Ensure user stories are ingested first
 4. **Long response times**: Normal for complex queries (10-30 seconds)
+5. **Vector index setup**: Use `npm run create-user-story-index` to get manual setup instructions
 
 ### Debug Information
 - All requests include trace IDs for debugging

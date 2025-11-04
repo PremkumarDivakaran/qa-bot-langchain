@@ -151,7 +151,7 @@ async function createUserStoryVectorIndex(): Promise<void> {
 }
 
 /**
- * Verify user story vector index exists and is ready
+ * Verify user story vector index exists and is ready by testing vector search
  */
 async function verifyUserStoryVectorIndex(): Promise<void> {
   const mongoUri = process.env.MONGODB_URI;
@@ -163,31 +163,49 @@ async function verifyUserStoryVectorIndex(): Promise<void> {
     throw new Error("MONGODB_URI is not set in .env file");
   }
 
-  console.log("\n🔍 Verifying User Story Vector Index\n");
-
   const client = new MongoClient(mongoUri);
 
   try {
     await client.connect();
     const collection = client.db(dbName).collection(collectionName);
 
-    // List all indexes
-    const indexes = await collection.indexes();
-    const vectorIndex = indexes.find((idx) => idx.name === indexName);
+    // Test vector search functionality
+    try {
+      // Create a test vector (1024 dimensions with small values)
+      const testVector = Array(1024).fill(0).map(() => Math.random() * 0.1);
+      
+      const vectorSearchPipeline = [
+        {
+          $vectorSearch: {
+            index: indexName,
+            path: "embedding",
+            queryVector: testVector,
+            numCandidates: 10,
+            limit: 1
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            score: { $meta: "vectorSearchScore" }
+          }
+        }
+      ];
 
-    if (vectorIndex) {
-      console.log(`✅ Vector index "${indexName}" found!`);
-      console.log("Index details:");
-      console.log(JSON.stringify(vectorIndex, null, 2));
-    } else {
-      console.log(`❌ Vector index "${indexName}" not found`);
-      console.log(`\nAvailable indexes:`);
-      indexes.forEach((idx) => console.log(`  - ${idx.name}`));
+      const results = await collection.aggregate(vectorSearchPipeline).toArray();
+
+      if (results.length > 0) {
+        console.log(`✅ Vector index "${indexName}" is present in MongoDB`);
+      } else {
+        console.log(`❌ Vector index "${indexName}" is not present in MongoDB`);
+      }
+
+    } catch (searchError: any) {
+      console.log(`❌ Vector index "${indexName}" is not present in MongoDB`);
     }
 
   } catch (error) {
-    console.error("❌ Verification failed:", error instanceof Error ? error.message : String(error));
-    throw error;
+    console.log(`❌ Vector index "${indexName}" is not present in MongoDB`);
   } finally {
     await client.close();
   }
