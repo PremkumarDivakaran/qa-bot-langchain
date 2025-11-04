@@ -32,29 +32,61 @@ A comprehensive TypeScript-based system for ingesting, processing, and retrievin
 Create a `.env` file with the following configuration:
 
 ```bash
+# Provider switch: groq | openai | anthropic
+MODEL_PROVIDER=YOUR_MODEL_PROVIDER
+TEMPERATURE=0.2
+INGESTION_BATCH_SIZE=15
+
+# Groq
+GROQ_API_KEY=YOUR_GROQ_API_KEY
+GROQ_MODEL=meta-llama/llama-4-maverick-17b-128e-instruct
+
+# Testleaf
+TESTLEAF_API_KEY=YOUR_TESTLEAF_API_KEY
+TESTLEAF_MODEL=gpt-4o-mini
+
+# OpenAI
+OPENAI_API_KEY=YOUR_OPENAI_API_KEY
+OPENAI_MODEL=gpt-4o-mini
+
+# Anthropic
+ANTHROPIC_API_KEY=YOUR_ANTHROPIC_API_KEY
+ANTHROPIC_MODEL=claude-3-5-sonnet-20241022
+
+# Mistral AI
+MISTRAL_API_KEY=YOUR_MISTRAL_API_KEY
+MISTRAL_EMBEDDING_MODEL=mistral-embed
+
 # MongoDB Configuration
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
 MONGODB_DB_NAME=RAG_DEMO
+MONGODB_COLLECTION=user_stories
+MONGODB_VECTOR_INDEX=user_stories_vector_index
+MONGODB_URI=YOUR_MONGODB_URI
 
-# User Story Configuration
-USER_STORY_DB_NAME=RAG_DEMO
-USER_STORY_COLLECTION=user_stories
-USER_STORY_VECTOR_INDEX=user_stories_vector_index
-
-# API Keys
-MISTRAL_API_KEY=your_mistral_api_key
-TESTLEAF_API_KEY=your_testleaf_api_key
-# OR
-OPENAI_API_KEY=your_openai_api_key
-
-# Embedding Configuration
+# Embeddings Configuration
 EMBEDDING_PROVIDER=mistral
 EMBEDDING_MODEL=mistral-embed
 EMBEDDING_DIMENSION=1024
 
-# Server Configuration
-PORT=8787
-HOST=localhost
+# LLM Re-ranking Configuration
+LLM_RERANKING_ENABLED=false  
+LLM_RETRIEVAL_TOP_K=25          
+
+# Documents Configuration
+DOCUMENTS_FOLDER=./documents
+
+# Weights for scoring
+vectorWeight=0.7
+keywordWeight=0.3
+
+# Server
+SERVER_URL=http://localhost:8787
+
+# User Story Documents Configuration
+USER_STORY_DOCUMENTS_FOLDER=./user_stories
+USER_STORY_DB_NAME=RAG_DEMO
+USER_STORY_COLLECTION=user_stories
+USER_STORY_VECTOR_INDEX=user_stories_vector_index
 ```
 
 ## 🚀 Quick Start
