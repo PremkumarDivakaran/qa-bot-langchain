@@ -1,0 +1,1826 @@
+{
+  "data": {
+    "edges": [
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "Prompt Template",
+            "id": "Prompt Template-Noiqa",
+            "name": "prompt",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "GroqModel-1gfRp",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        },
+        "id": "reactflow__edge-Prompt Template-Noiqa{œdataTypeœ:œPrompt Templateœ,œidœ:œPrompt Template-Noiqaœ,œnameœ:œpromptœ,œoutput_typesœ:[œMessageœ]}-GroqModel-1gfRp{œfieldNameœ:œinput_valueœ,œidœ:œGroqModel-1gfRpœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "selected": false,
+        "source": "Prompt Template-Noiqa",
+        "sourceHandle": "{œdataTypeœ:œPrompt Templateœ,œidœ:œPrompt Template-Noiqaœ,œnameœ:œpromptœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "GroqModel-1gfRp",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œGroqModel-1gfRpœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "GroqModel",
+            "id": "GroqModel-1gfRp",
+            "name": "text_output",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_value",
+            "id": "TextOutput-wCkji",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        },
+        "id": "reactflow__edge-GroqModel-1gfRp{œdataTypeœ:œGroqModelœ,œidœ:œGroqModel-1gfRpœ,œnameœ:œtext_outputœ,œoutput_typesœ:[œMessageœ]}-TextOutput-wCkji{œfieldNameœ:œinput_valueœ,œidœ:œTextOutput-wCkjiœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "selected": false,
+        "source": "GroqModel-1gfRp",
+        "sourceHandle": "{œdataTypeœ:œGroqModelœ,œidœ:œGroqModel-1gfRpœ,œnameœ:œtext_outputœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "TextOutput-wCkji",
+        "targetHandle": "{œfieldNameœ:œinput_valueœ,œidœ:œTextOutput-wCkjiœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "MistalAIEmbeddings",
+            "id": "MistalAIEmbeddings-WuLes",
+            "name": "embeddings",
+            "output_types": [
+              "Embeddings"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "embedding",
+            "id": "MongoDBAtlasVector-LXfVw",
+            "inputTypes": [
+              "Embeddings"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "xy-edge__MistalAIEmbeddings-WuLes{œdataTypeœ:œMistalAIEmbeddingsœ,œidœ:œMistalAIEmbeddings-WuLesœ,œnameœ:œembeddingsœ,œoutput_typesœ:[œEmbeddingsœ]}-MongoDBAtlasVector-LXfVw{œfieldNameœ:œembeddingœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œinputTypesœ:[œEmbeddingsœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "MistalAIEmbeddings-WuLes",
+        "sourceHandle": "{œdataTypeœ:œMistalAIEmbeddingsœ,œidœ:œMistalAIEmbeddings-WuLesœ,œnameœ:œembeddingsœ,œoutput_typesœ:[œEmbeddingsœ]}",
+        "target": "MongoDBAtlasVector-LXfVw",
+        "targetHandle": "{œfieldNameœ:œembeddingœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œinputTypesœ:[œEmbeddingsœ],œtypeœ:œotherœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "MongoDBAtlasVector",
+            "id": "MongoDBAtlasVector-LXfVw",
+            "name": "dataframe",
+            "output_types": [
+              "DataFrame"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "input_data",
+            "id": "ParserComponent-snS9Y",
+            "inputTypes": [
+              "DataFrame",
+              "Data"
+            ],
+            "type": "other"
+          }
+        },
+        "id": "xy-edge__MongoDBAtlasVector-LXfVw{œdataTypeœ:œMongoDBAtlasVectorœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œnameœ:œdataframeœ,œoutput_typesœ:[œDataFrameœ]}-ParserComponent-snS9Y{œfieldNameœ:œinput_dataœ,œidœ:œParserComponent-snS9Yœ,œinputTypesœ:[œDataFrameœ,œDataœ],œtypeœ:œotherœ}",
+        "selected": false,
+        "source": "MongoDBAtlasVector-LXfVw",
+        "sourceHandle": "{œdataTypeœ:œMongoDBAtlasVectorœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œnameœ:œdataframeœ,œoutput_typesœ:[œDataFrameœ]}",
+        "target": "ParserComponent-snS9Y",
+        "targetHandle": "{œfieldNameœ:œinput_dataœ,œidœ:œParserComponent-snS9Yœ,œinputTypesœ:[œDataFrameœ,œDataœ],œtypeœ:œotherœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "TextInput",
+            "id": "TextInput-DZ6O1",
+            "name": "text",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "search_query",
+            "id": "MongoDBAtlasVector-LXfVw",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "query"
+          }
+        },
+        "id": "xy-edge__TextInput-DZ6O1{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DZ6O1œ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}-MongoDBAtlasVector-LXfVw{œfieldNameœ:œsearch_queryœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œinputTypesœ:[œMessageœ],œtypeœ:œqueryœ}",
+        "selected": false,
+        "source": "TextInput-DZ6O1",
+        "sourceHandle": "{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DZ6O1œ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "MongoDBAtlasVector-LXfVw",
+        "targetHandle": "{œfieldNameœ:œsearch_queryœ,œidœ:œMongoDBAtlasVector-LXfVwœ,œinputTypesœ:[œMessageœ],œtypeœ:œqueryœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "ParserComponent",
+            "id": "ParserComponent-snS9Y",
+            "name": "parsed_text",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "vector_db_json",
+            "id": "Prompt Template-Noiqa",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__ParserComponent-snS9Y{œdataTypeœ:œParserComponentœ,œidœ:œParserComponent-snS9Yœ,œnameœ:œparsed_textœ,œoutput_typesœ:[œMessageœ]}-Prompt Template-Noiqa{œfieldNameœ:œvector_db_jsonœ,œidœ:œPrompt Template-Noiqaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "selected": false,
+        "source": "ParserComponent-snS9Y",
+        "sourceHandle": "{œdataTypeœ:œParserComponentœ,œidœ:œParserComponent-snS9Yœ,œnameœ:œparsed_textœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "Prompt Template-Noiqa",
+        "targetHandle": "{œfieldNameœ:œvector_db_jsonœ,œidœ:œPrompt Template-Noiqaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}"
+      },
+      {
+        "animated": false,
+        "className": "",
+        "data": {
+          "sourceHandle": {
+            "dataType": "TextInput",
+            "id": "TextInput-DZ6O1",
+            "name": "text",
+            "output_types": [
+              "Message"
+            ]
+          },
+          "targetHandle": {
+            "fieldName": "user_input",
+            "id": "Prompt Template-Noiqa",
+            "inputTypes": [
+              "Message"
+            ],
+            "type": "str"
+          }
+        },
+        "id": "xy-edge__TextInput-DZ6O1{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DZ6O1œ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}-Prompt Template-Noiqa{œfieldNameœ:œuser_inputœ,œidœ:œPrompt Template-Noiqaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}",
+        "selected": false,
+        "source": "TextInput-DZ6O1",
+        "sourceHandle": "{œdataTypeœ:œTextInputœ,œidœ:œTextInput-DZ6O1œ,œnameœ:œtextœ,œoutput_typesœ:[œMessageœ]}",
+        "target": "Prompt Template-Noiqa",
+        "targetHandle": "{œfieldNameœ:œuser_inputœ,œidœ:œPrompt Template-Noiqaœ,œinputTypesœ:[œMessageœ],œtypeœ:œstrœ}"
+      }
+    ],
+    "nodes": [
+      {
+        "data": {
+          "id": "Prompt Template-Noiqa",
+          "node": {
+            "base_classes": [
+              "Message"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {
+              "template": [
+                "user_input",
+                "vector_db_json"
+              ]
+            },
+            "description": "Create a prompt template with dynamic variables.",
+            "display_name": "Prompt Template",
+            "documentation": "https://docs.langflow.org/components-prompts",
+            "edited": false,
+            "error": null,
+            "field_order": [
+              "template",
+              "tool_placeholder"
+            ],
+            "frozen": false,
+            "full_path": null,
+            "icon": "braces",
+            "is_composition": null,
+            "is_input": null,
+            "is_output": null,
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {},
+            "minimized": false,
+            "name": "",
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Prompt",
+                "group_outputs": false,
+                "hidden": null,
+                "method": "build_prompt",
+                "name": "prompt",
+                "options": null,
+                "required_inputs": null,
+                "selected": "Message",
+                "tool_mode": true,
+                "types": [
+                  "Message"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "priority": 0,
+            "replacement": null,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from langflow.base.prompts.api_utils import process_prompt_template\nfrom langflow.custom.custom_component.component import Component\nfrom langflow.inputs.inputs import DefaultPromptField\nfrom langflow.io import MessageTextInput, Output, PromptInput\nfrom langflow.schema.message import Message\nfrom langflow.template.utils import update_template_values\n\n\nclass PromptComponent(Component):\n    display_name: str = \"Prompt Template\"\n    description: str = \"Create a prompt template with dynamic variables.\"\n    documentation: str = \"https://docs.langflow.org/components-prompts\"\n    icon = \"braces\"\n    trace_type = \"prompt\"\n    name = \"Prompt Template\"\n    priority = 0  # Set priority to 0 to make it appear first\n\n    inputs = [\n        PromptInput(name=\"template\", display_name=\"Template\"),\n        MessageTextInput(\n            name=\"tool_placeholder\",\n            display_name=\"Tool Placeholder\",\n            tool_mode=True,\n            advanced=True,\n            info=\"A placeholder input for tool mode.\",\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Prompt\", name=\"prompt\", method=\"build_prompt\"),\n    ]\n\n    async def build_prompt(self) -> Message:\n        prompt = Message.from_template(**self._attributes)\n        self.status = prompt.text\n        return prompt\n\n    def _update_template(self, frontend_node: dict):\n        prompt_template = frontend_node[\"template\"][\"template\"][\"value\"]\n        custom_fields = frontend_node[\"custom_fields\"]\n        frontend_node_template = frontend_node[\"template\"]\n        _ = process_prompt_template(\n            template=prompt_template,\n            name=\"template\",\n            custom_fields=custom_fields,\n            frontend_node_template=frontend_node_template,\n        )\n        return frontend_node\n\n    async def update_frontend_node(self, new_frontend_node: dict, current_frontend_node: dict):\n        \"\"\"This function is called after the code validation is done.\"\"\"\n        frontend_node = await super().update_frontend_node(new_frontend_node, current_frontend_node)\n        template = frontend_node[\"template\"][\"template\"][\"value\"]\n        # Kept it duplicated for backwards compatibility\n        _ = process_prompt_template(\n            template=template,\n            name=\"template\",\n            custom_fields=frontend_node[\"custom_fields\"],\n            frontend_node_template=frontend_node[\"template\"],\n        )\n        # Now that template is updated, we need to grab any values that were set in the current_frontend_node\n        # and update the frontend_node with those values\n        update_template_values(new_template=frontend_node, previous_template=current_frontend_node[\"template\"])\n        return frontend_node\n\n    def _get_fallback_input(self, **kwargs):\n        return DefaultPromptField(**kwargs)\n"
+              },
+              "template": {
+                "_input_type": "PromptInput",
+                "advanced": false,
+                "display_name": "Template",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "template",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "type": "prompt",
+                "value": "Instruction:\nYou are required to answer the user’s question using only the information provided in the context. Do not make assumptions or provide information not present in the context. If the answer cannot be found in the context, respond with “The answer is not available in the provided context.” \n\nDo NOT invent new stories for the \"Existing Stories\" section. Only use the stories provided in the Vector DB Fetch.\n\nQuestion:\nFormat the given user story from the user input into a fully detailed and standardized user story as per the existing user stories. Also, select 3 relevant user stories from the provided vector database.\n\nContext:\nUser Input:\n{user_input}\n\nVector DB Fetch (Relevant Stories / Examples):\n{vector_db_json}\n\nExpected Result:\n1. [MANDATORY] Standardize the user input story into proper format with the following fields:\n   - summary\n   - projectName\n   - description (as per vector DB if needed)\n   - acceptanceCriteria\n   - storyId\n   - parentSummary\n   - statusCategory\n   - priority\n   - risk\n   - createdDate\n   - lastModifiedDate\n2. Include 3 relevant existing user stories from the vector DB in the same format. **Do not modify their storyId, summary, or other fields.**\n3. Provide a score (0–100) for the created user story based on business value, completeness, and adherence to the standard format.\n4. Ensure output is readable, properly structured, and suitable for ingestion into MongoDB or CSV.\n\nTone:\nProfessional, helpful, and factual. Avoid speculation or personal opinions.\n\nOutput Format:\n- Answer in complete sentences.\n- Display all user stories with all fields clearly labeled.\n- Include the score for the created user story.\n- Avoid including unrelated information.\n\nPersona:\nYou are an expert assistant with in-depth knowledge of QA, software testing, and healthcare domain user stories. You are precise, clear, and focused on producing accurate, standardized user stories."
+              },
+              "tool_placeholder": {
+                "_input_type": "MessageTextInput",
+                "advanced": true,
+                "display_name": "Tool Placeholder",
+                "dynamic": false,
+                "info": "A placeholder input for tool mode.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "tool_placeholder",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": true,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": ""
+              },
+              "user_input": {
+                "advanced": false,
+                "display_name": "user_input",
+                "dynamic": false,
+                "field_type": "str",
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "user_input",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              },
+              "vector_db_json": {
+                "advanced": false,
+                "display_name": "vector_db_json",
+                "dynamic": false,
+                "field_type": "str",
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "vector_db_json",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "showNode": true,
+          "type": "Prompt Template"
+        },
+        "dragging": false,
+        "id": "Prompt Template-Noiqa",
+        "measured": {
+          "height": 441,
+          "width": 320
+        },
+        "position": {
+          "x": -2769.7727638941574,
+          "y": -2681.7106648720414
+        },
+        "selected": false,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "GroqModel-1gfRp",
+          "node": {
+            "base_classes": [
+              "LanguageModel",
+              "Message"
+            ],
+            "beta": false,
+            "category": "groq",
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Generate text using Groq.",
+            "display_name": "Groq",
+            "documentation": "",
+            "edited": false,
+            "field_order": [
+              "input_value",
+              "system_message",
+              "stream",
+              "api_key",
+              "base_url",
+              "max_tokens",
+              "temperature",
+              "n",
+              "model_name",
+              "tool_model_enabled"
+            ],
+            "frozen": false,
+            "icon": "Groq",
+            "key": "GroqModel",
+            "last_updated": "2025-11-03T17:07:47.173Z",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {
+              "keywords": [
+                "model",
+                "llm",
+                "language model",
+                "large language model"
+              ]
+            },
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Model Response",
+                "group_outputs": false,
+                "method": "text_response",
+                "name": "text_output",
+                "options": null,
+                "required_inputs": null,
+                "selected": "Message",
+                "tool_mode": true,
+                "types": [
+                  "Message"
+                ],
+                "value": "__UNDEFINED__"
+              },
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Language Model",
+                "group_outputs": false,
+                "method": "build_model",
+                "name": "model_output",
+                "options": null,
+                "required_inputs": null,
+                "selected": "LanguageModel",
+                "tool_mode": true,
+                "types": [
+                  "LanguageModel"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "score": 2.2049332610827514e-32,
+            "template": {
+              "_type": "Component",
+              "api_key": {
+                "_input_type": "SecretStrInput",
+                "advanced": false,
+                "display_name": "Groq API Key",
+                "dynamic": false,
+                "info": "API key for the Groq API.",
+                "input_types": [],
+                "load_from_db": true,
+                "name": "api_key",
+                "password": true,
+                "placeholder": "",
+                "real_time_refresh": true,
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              },
+              "base_url": {
+                "_input_type": "MessageTextInput",
+                "advanced": true,
+                "display_name": "Groq API Base",
+                "dynamic": false,
+                "info": "Base URL path for API requests, leave blank if not using a proxy or service emulator.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "base_url",
+                "placeholder": "",
+                "real_time_refresh": true,
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "https://api.groq.com"
+              },
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "import requests\nfrom pydantic.v1 import SecretStr\n\nfrom langflow.base.models.groq_constants import (\n    GROQ_MODELS,\n    TOOL_CALLING_UNSUPPORTED_GROQ_MODELS,\n    UNSUPPORTED_GROQ_MODELS,\n)\nfrom langflow.base.models.model import LCModelComponent\nfrom langflow.field_typing import LanguageModel\nfrom langflow.field_typing.range_spec import RangeSpec\nfrom langflow.io import BoolInput, DropdownInput, IntInput, MessageTextInput, SecretStrInput, SliderInput\nfrom langflow.logging.logger import logger\n\n\nclass GroqModel(LCModelComponent):\n    display_name: str = \"Groq\"\n    description: str = \"Generate text using Groq.\"\n    icon = \"Groq\"\n    name = \"GroqModel\"\n\n    inputs = [\n        *LCModelComponent._base_inputs,\n        SecretStrInput(\n            name=\"api_key\", display_name=\"Groq API Key\", info=\"API key for the Groq API.\", real_time_refresh=True\n        ),\n        MessageTextInput(\n            name=\"base_url\",\n            display_name=\"Groq API Base\",\n            info=\"Base URL path for API requests, leave blank if not using a proxy or service emulator.\",\n            advanced=True,\n            value=\"https://api.groq.com\",\n            real_time_refresh=True,\n        ),\n        IntInput(\n            name=\"max_tokens\",\n            display_name=\"Max Output Tokens\",\n            info=\"The maximum number of tokens to generate.\",\n            advanced=True,\n        ),\n        SliderInput(\n            name=\"temperature\",\n            display_name=\"Temperature\",\n            value=0.1,\n            info=\"Run inference with this temperature. Must by in the closed interval [0.0, 1.0].\",\n            range_spec=RangeSpec(min=0, max=1, step=0.01),\n            advanced=True,\n        ),\n        IntInput(\n            name=\"n\",\n            display_name=\"N\",\n            info=\"Number of chat completions to generate for each prompt. \"\n            \"Note that the API may not return the full n completions if duplicates are generated.\",\n            advanced=True,\n        ),\n        DropdownInput(\n            name=\"model_name\",\n            display_name=\"Model\",\n            info=\"The name of the model to use.\",\n            options=GROQ_MODELS,\n            value=GROQ_MODELS[0],\n            refresh_button=True,\n            combobox=True,\n        ),\n        BoolInput(\n            name=\"tool_model_enabled\",\n            display_name=\"Enable Tool Models\",\n            info=(\n                \"Select if you want to use models that can work with tools. If yes, only those models will be shown.\"\n            ),\n            advanced=False,\n            value=False,\n            real_time_refresh=True,\n        ),\n    ]\n\n    def get_models(self, *, tool_model_enabled: bool | None = None) -> list[str]:\n        try:\n            url = f\"{self.base_url}/openai/v1/models\"\n            headers = {\"Authorization\": f\"Bearer {self.api_key}\", \"Content-Type\": \"application/json\"}\n\n            response = requests.get(url, headers=headers, timeout=10)\n            response.raise_for_status()\n            model_list = response.json()\n            model_ids = [\n                model[\"id\"] for model in model_list.get(\"data\", []) if model[\"id\"] not in UNSUPPORTED_GROQ_MODELS\n            ]\n        except (ImportError, ValueError, requests.exceptions.RequestException) as e:\n            logger.exception(f\"Error getting model names: {e}\")\n            model_ids = GROQ_MODELS\n        if tool_model_enabled:\n            try:\n                from langchain_groq import ChatGroq\n            except ImportError as e:\n                msg = \"langchain_groq is not installed. Please install it with `pip install langchain_groq`.\"\n                raise ImportError(msg) from e\n            for model in model_ids:\n                model_with_tool = ChatGroq(\n                    model=model,\n                    api_key=self.api_key,\n                    base_url=self.base_url,\n                )\n                if not self.supports_tool_calling(model_with_tool) or model in TOOL_CALLING_UNSUPPORTED_GROQ_MODELS:\n                    model_ids.remove(model)\n            return model_ids\n        return model_ids\n\n    def update_build_config(self, build_config: dict, field_value: str, field_name: str | None = None):\n        if field_name in {\"base_url\", \"model_name\", \"tool_model_enabled\", \"api_key\"} and field_value:\n            try:\n                if len(self.api_key) != 0:\n                    try:\n                        ids = self.get_models(tool_model_enabled=self.tool_model_enabled)\n                    except (ImportError, ValueError, requests.exceptions.RequestException) as e:\n                        logger.exception(f\"Error getting model names: {e}\")\n                        ids = GROQ_MODELS\n                    build_config.setdefault(\"model_name\", {})\n                    build_config[\"model_name\"][\"options\"] = ids\n                    build_config[\"model_name\"].setdefault(\"value\", ids[0])\n            except Exception as e:\n                msg = f\"Error getting model names: {e}\"\n                raise ValueError(msg) from e\n        return build_config\n\n    def build_model(self) -> LanguageModel:  # type: ignore[type-var]\n        try:\n            from langchain_groq import ChatGroq\n        except ImportError as e:\n            msg = \"langchain-groq is not installed. Please install it with `pip install langchain-groq`.\"\n            raise ImportError(msg) from e\n\n        return ChatGroq(\n            model=self.model_name,\n            max_tokens=self.max_tokens or None,\n            temperature=self.temperature,\n            base_url=self.base_url,\n            n=self.n or 1,\n            api_key=SecretStr(self.api_key).get_secret_value(),\n            streaming=self.stream,\n        )\n"
+              },
+              "input_value": {
+                "_input_type": "MessageInput",
+                "advanced": false,
+                "display_name": "Input",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "input_value",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": ""
+              },
+              "max_tokens": {
+                "_input_type": "IntInput",
+                "advanced": true,
+                "display_name": "Max Output Tokens",
+                "dynamic": false,
+                "info": "The maximum number of tokens to generate.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "max_tokens",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": ""
+              },
+              "model_name": {
+                "_input_type": "DropdownInput",
+                "advanced": false,
+                "combobox": true,
+                "dialog_inputs": {},
+                "display_name": "Model",
+                "dynamic": false,
+                "external_options": {},
+                "info": "The name of the model to use.",
+                "name": "model_name",
+                "options": [
+                  "meta-llama/llama-prompt-guard-2-22m",
+                  "meta-llama/llama-4-maverick-17b-128e-instruct",
+                  "llama-3.1-8b-instant",
+                  "openai/gpt-oss-120b",
+                  "qwen/qwen3-32b",
+                  "meta-llama/llama-4-scout-17b-16e-instruct",
+                  "moonshotai/kimi-k2-instruct-0905",
+                  "llama-3.3-70b-versatile",
+                  "groq/compound-mini",
+                  "groq/compound",
+                  "meta-llama/llama-guard-4-12b",
+                  "meta-llama/llama-prompt-guard-2-86m",
+                  "openai/gpt-oss-20b",
+                  "moonshotai/kimi-k2-instruct",
+                  "allam-2-7b"
+                ],
+                "options_metadata": [],
+                "placeholder": "",
+                "refresh_button": true,
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "toggle": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "openai/gpt-oss-120b"
+              },
+              "n": {
+                "_input_type": "IntInput",
+                "advanced": true,
+                "display_name": "N",
+                "dynamic": false,
+                "info": "Number of chat completions to generate for each prompt. Note that the API may not return the full n completions if duplicates are generated.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "n",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": ""
+              },
+              "stream": {
+                "_input_type": "BoolInput",
+                "advanced": true,
+                "display_name": "Stream",
+                "dynamic": false,
+                "info": "Stream the response from the model. Streaming works only in Chat.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "stream",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "bool",
+                "value": false
+              },
+              "system_message": {
+                "_input_type": "MultilineInput",
+                "advanced": false,
+                "copy_field": false,
+                "display_name": "System Message",
+                "dynamic": false,
+                "info": "System message to pass to the model.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "multiline": true,
+                "name": "system_message",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": ""
+              },
+              "temperature": {
+                "_input_type": "SliderInput",
+                "advanced": true,
+                "display_name": "Temperature",
+                "dynamic": false,
+                "info": "Run inference with this temperature. Must by in the closed interval [0.0, 1.0].",
+                "max_label": "",
+                "max_label_icon": "",
+                "min_label": "",
+                "min_label_icon": "",
+                "name": "temperature",
+                "placeholder": "",
+                "range_spec": {
+                  "max": 1,
+                  "min": 0,
+                  "step": 0.01,
+                  "step_type": "float"
+                },
+                "required": false,
+                "show": true,
+                "slider_buttons": false,
+                "slider_buttons_options": [],
+                "slider_input": false,
+                "title_case": false,
+                "tool_mode": false,
+                "type": "slider",
+                "value": 0.1
+              },
+              "tool_model_enabled": {
+                "_input_type": "BoolInput",
+                "advanced": false,
+                "display_name": "Enable Tool Models",
+                "dynamic": false,
+                "info": "Select if you want to use models that can work with tools. If yes, only those models will be shown.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "tool_model_enabled",
+                "placeholder": "",
+                "real_time_refresh": true,
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "bool",
+                "value": false
+              }
+            },
+            "tool_mode": false
+          },
+          "selected_output": "text_output",
+          "showNode": true,
+          "type": "GroqModel"
+        },
+        "dragging": false,
+        "id": "GroqModel-1gfRp",
+        "measured": {
+          "height": 491,
+          "width": 320
+        },
+        "position": {
+          "x": -2116.0855018348857,
+          "y": -2596.898899577775
+        },
+        "selected": false,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "TextOutput-wCkji",
+          "node": {
+            "base_classes": [
+              "Message"
+            ],
+            "beta": false,
+            "category": "input_output",
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Sends text output via API.",
+            "display_name": "Text Output",
+            "documentation": "https://docs.langflow.org/components-io#text-output",
+            "edited": false,
+            "field_order": [
+              "input_value"
+            ],
+            "frozen": false,
+            "icon": "type",
+            "key": "TextOutput",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Output Text",
+                "group_outputs": false,
+                "method": "text_response",
+                "name": "text",
+                "selected": "Message",
+                "tool_mode": true,
+                "types": [
+                  "Message"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "score": 0.0026904540161865127,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextOutputComponent(TextComponent):\n    display_name = \"Text Output\"\n    description = \"Sends text output via API.\"\n    documentation: str = \"https://docs.langflow.org/components-io#text-output\"\n    icon = \"type\"\n    name = \"TextOutput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Inputs\",\n            info=\"Text to be passed as output.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Output Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        message = Message(\n            text=self.input_value,\n        )\n        self.status = self.input_value\n        return message\n"
+              },
+              "input_value": {
+                "_input_type": "MultilineInput",
+                "advanced": false,
+                "copy_field": false,
+                "display_name": "Inputs",
+                "dynamic": false,
+                "info": "Text to be passed as output.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "multiline": true,
+                "name": "input_value",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": ""
+              }
+            },
+            "tool_mode": false
+          },
+          "showNode": true,
+          "type": "TextOutput"
+        },
+        "dragging": false,
+        "id": "TextOutput-wCkji",
+        "measured": {
+          "height": 203,
+          "width": 320
+        },
+        "position": {
+          "x": -1697.9892935860541,
+          "y": -2197.818766403941
+        },
+        "selected": true,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "TextInput-DZ6O1",
+          "node": {
+            "base_classes": [
+              "Message"
+            ],
+            "beta": false,
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Get user text inputs.",
+            "display_name": "Text Input",
+            "documentation": "https://docs.langflow.org/components-io#text-input",
+            "edited": false,
+            "field_order": [
+              "input_value"
+            ],
+            "frozen": false,
+            "icon": "type",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Output Text",
+                "group_outputs": false,
+                "method": "text_response",
+                "name": "text",
+                "selected": "Message",
+                "tool_mode": true,
+                "types": [
+                  "Message"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from langflow.base.io.text import TextComponent\nfrom langflow.io import MultilineInput, Output\nfrom langflow.schema.message import Message\n\n\nclass TextInputComponent(TextComponent):\n    display_name = \"Text Input\"\n    description = \"Get user text inputs.\"\n    documentation: str = \"https://docs.langflow.org/components-io#text-input\"\n    icon = \"type\"\n    name = \"TextInput\"\n\n    inputs = [\n        MultilineInput(\n            name=\"input_value\",\n            display_name=\"Text\",\n            info=\"Text to be passed as input.\",\n        ),\n    ]\n    outputs = [\n        Output(display_name=\"Output Text\", name=\"text\", method=\"text_response\"),\n    ]\n\n    def text_response(self) -> Message:\n        return Message(\n            text=self.input_value,\n        )\n"
+              },
+              "input_value": {
+                "_input_type": "MultilineInput",
+                "advanced": false,
+                "copy_field": false,
+                "display_name": "Text",
+                "dynamic": false,
+                "info": "Text to be passed as input.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "multiline": true,
+                "name": "input_value",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "As a user, I want the system to send medication reminders to patients so that they take their medicines on time and avoid missing doses."
+              }
+            },
+            "tool_mode": false
+          },
+          "showNode": true,
+          "type": "TextInput"
+        },
+        "dragging": false,
+        "id": "TextInput-DZ6O1",
+        "measured": {
+          "height": 203,
+          "width": 320
+        },
+        "position": {
+          "x": -4434.409591327453,
+          "y": -2593.6869354983696
+        },
+        "selected": false,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "MongoDBAtlasVector-LXfVw",
+          "node": {
+            "base_classes": [
+              "Data",
+              "DataFrame"
+            ],
+            "beta": false,
+            "category": "mongodb",
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "MongoDB Atlas Vector Store with search capabilities",
+            "display_name": "MongoDB Atlas",
+            "documentation": "",
+            "edited": false,
+            "field_order": [
+              "mongodb_atlas_cluster_uri",
+              "enable_mtls",
+              "mongodb_atlas_client_cert",
+              "db_name",
+              "collection_name",
+              "index_name",
+              "ingest_data",
+              "search_query",
+              "should_cache_vector_store",
+              "insert_mode",
+              "embedding",
+              "number_of_results",
+              "index_field",
+              "filter_field",
+              "number_dimensions",
+              "similarity",
+              "quantization"
+            ],
+            "frozen": false,
+            "icon": "MongoDB",
+            "key": "MongoDBAtlasVector",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Search Results",
+                "group_outputs": false,
+                "method": "search_documents",
+                "name": "search_results",
+                "tool_mode": true,
+                "types": [
+                  "Data"
+                ],
+                "value": "__UNDEFINED__"
+              },
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "DataFrame",
+                "group_outputs": false,
+                "method": "as_dataframe",
+                "name": "dataframe",
+                "selected": "DataFrame",
+                "tool_mode": true,
+                "types": [
+                  "DataFrame"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "score": 5.559042572704038e-7,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "import tempfile\nimport time\n\nimport certifi\nfrom langchain_community.vectorstores import MongoDBAtlasVectorSearch\nfrom pymongo.collection import Collection\nfrom pymongo.operations import SearchIndexModel\n\nfrom langflow.base.vectorstores.model import LCVectorStoreComponent, check_cached_vector_store\nfrom langflow.helpers.data import docs_to_data\nfrom langflow.io import BoolInput, DropdownInput, HandleInput, IntInput, SecretStrInput, StrInput\nfrom langflow.schema.data import Data\n\n\nclass MongoVectorStoreComponent(LCVectorStoreComponent):\n    display_name = \"MongoDB Atlas\"\n    description = \"MongoDB Atlas Vector Store with search capabilities\"\n    name = \"MongoDBAtlasVector\"\n    icon = \"MongoDB\"\n    INSERT_MODES = [\"append\", \"overwrite\"]\n    SIMILARITY_OPTIONS = [\"cosine\", \"euclidean\", \"dotProduct\"]\n    QUANTIZATION_OPTIONS = [\"scalar\", \"binary\"]\n    inputs = [\n        SecretStrInput(name=\"mongodb_atlas_cluster_uri\", display_name=\"MongoDB Atlas Cluster URI\", required=True),\n        BoolInput(name=\"enable_mtls\", display_name=\"Enable mTLS\", value=False, advanced=True, required=True),\n        SecretStrInput(\n            name=\"mongodb_atlas_client_cert\",\n            display_name=\"MongoDB Atlas Combined Client Certificate\",\n            required=False,\n            info=\"Client Certificate combined with the private key in the following format:\\n \"\n            \"-----BEGIN PRIVATE KEY-----\\n...\\n -----END PRIVATE KEY-----\\n-----BEGIN CERTIFICATE-----\\n\"\n            \"...\\n-----END CERTIFICATE-----\\n\",\n        ),\n        StrInput(name=\"db_name\", display_name=\"Database Name\", required=True),\n        StrInput(name=\"collection_name\", display_name=\"Collection Name\", required=True),\n        StrInput(\n            name=\"index_name\",\n            display_name=\"Index Name\",\n            required=True,\n            info=\"The name of Atlas Search index, it should be a Vector Search.\",\n        ),\n        *LCVectorStoreComponent.inputs,\n        DropdownInput(\n            name=\"insert_mode\",\n            display_name=\"Insert Mode\",\n            options=INSERT_MODES,\n            value=INSERT_MODES[0],\n            info=\"How to insert new documents into the collection.\",\n            advanced=True,\n        ),\n        HandleInput(name=\"embedding\", display_name=\"Embedding\", input_types=[\"Embeddings\"]),\n        IntInput(\n            name=\"number_of_results\",\n            display_name=\"Number of Results\",\n            info=\"Number of results to return.\",\n            value=4,\n            advanced=True,\n        ),\n        StrInput(\n            name=\"index_field\",\n            display_name=\"Index Field\",\n            advanced=True,\n            required=True,\n            info=\"The field to index.\",\n            value=\"embedding\",\n        ),\n        StrInput(\n            name=\"filter_field\", display_name=\"Filter Field\", advanced=True, info=\"The field to filter the index.\"\n        ),\n        IntInput(\n            name=\"number_dimensions\",\n            display_name=\"Number of Dimensions\",\n            info=\"Embedding Context Length.\",\n            value=1536,\n            advanced=True,\n            required=True,\n        ),\n        DropdownInput(\n            name=\"similarity\",\n            display_name=\"Similarity\",\n            options=SIMILARITY_OPTIONS,\n            value=SIMILARITY_OPTIONS[0],\n            info=\"The method used to measure the similarity between vectors.\",\n            advanced=True,\n        ),\n        DropdownInput(\n            name=\"quantization\",\n            display_name=\"Quantization\",\n            options=QUANTIZATION_OPTIONS,\n            value=None,\n            info=\"Quantization reduces memory costs converting 32-bit floats to smaller data types\",\n            advanced=True,\n        ),\n    ]\n\n    @check_cached_vector_store\n    def build_vector_store(self) -> MongoDBAtlasVectorSearch:\n        try:\n            from pymongo import MongoClient\n        except ImportError as e:\n            msg = \"Please install pymongo to use MongoDB Atlas Vector Store\"\n            raise ImportError(msg) from e\n\n        # Create temporary files for the client certificate\n        if self.enable_mtls:\n            client_cert_path = None\n            try:\n                client_cert = self.mongodb_atlas_client_cert.replace(\" \", \"\\n\")\n                client_cert = client_cert.replace(\"-----BEGIN\\nPRIVATE\\nKEY-----\", \"-----BEGIN PRIVATE KEY-----\")\n                client_cert = client_cert.replace(\n                    \"-----END\\nPRIVATE\\nKEY-----\\n-----BEGIN\\nCERTIFICATE-----\",\n                    \"-----END PRIVATE KEY-----\\n-----BEGIN CERTIFICATE-----\",\n                )\n                client_cert = client_cert.replace(\"-----END\\nCERTIFICATE-----\", \"-----END CERTIFICATE-----\")\n                with tempfile.NamedTemporaryFile(delete=False) as client_cert_file:\n                    client_cert_file.write(client_cert.encode(\"utf-8\"))\n                    client_cert_path = client_cert_file.name\n\n            except Exception as e:\n                msg = f\"Failed to write certificate to temporary file: {e}\"\n                raise ValueError(msg) from e\n\n        try:\n            mongo_client: MongoClient = (\n                MongoClient(\n                    self.mongodb_atlas_cluster_uri,\n                    tls=True,\n                    tlsCertificateKeyFile=client_cert_path,\n                    tlsCAFile=certifi.where(),\n                )\n                if self.enable_mtls\n                else MongoClient(self.mongodb_atlas_cluster_uri)\n            )\n\n            collection = mongo_client[self.db_name][self.collection_name]\n\n        except Exception as e:\n            msg = f\"Failed to connect to MongoDB Atlas: {e}\"\n            raise ValueError(msg) from e\n\n        # Convert DataFrame to Data if needed using parent's method\n        self.ingest_data = self._prepare_ingest_data()\n\n        documents = []\n        for _input in self.ingest_data or []:\n            if isinstance(_input, Data):\n                documents.append(_input.to_lc_document())\n            else:\n                documents.append(_input)\n\n        if documents:\n            self.__insert_mode(collection)\n\n            return MongoDBAtlasVectorSearch.from_documents(\n                documents=documents, embedding=self.embedding, collection=collection, index_name=self.index_name\n            )\n        return MongoDBAtlasVectorSearch(embedding=self.embedding, collection=collection, index_name=self.index_name)\n\n    def search_documents(self) -> list[Data]:\n        from bson.objectid import ObjectId\n\n        vector_store = self.build_vector_store()\n\n        self.verify_search_index(vector_store._collection)\n\n        if self.search_query and isinstance(self.search_query, str):\n            docs = vector_store.similarity_search(\n                query=self.search_query,\n                k=self.number_of_results,\n            )\n            for doc in docs:\n                doc.metadata = {\n                    key: str(value) if isinstance(value, ObjectId) else value for key, value in doc.metadata.items()\n                }\n\n            data = docs_to_data(docs)\n            self.status = data\n            return data\n        return []\n\n    def __insert_mode(self, collection: Collection) -> None:\n        if self.insert_mode == \"overwrite\":\n            collection.delete_many({})  # Delete all documents while preserving collection structure\n\n    def verify_search_index(self, collection: Collection) -> None:\n        \"\"\"Verify if the search index exists, if not, create it.\n\n        Args:\n            collection (Collection): The collection to verify the search index on.\n        \"\"\"\n        indexes = collection.list_search_indexes()\n\n        index_names_types = {idx[\"name\"]: idx[\"type\"] for idx in indexes}\n        index_names = list(index_names_types.keys())\n        index_type = index_names_types.get(self.index_name)\n        if self.index_name not in index_names and index_type != \"vectorSearch\":\n            collection.create_search_index(self.__create_index_definition())\n\n            time.sleep(20)  # Give some time for index to be ready\n\n    def __create_index_definition(self) -> SearchIndexModel:\n        fields = [\n            {\n                \"type\": \"vector\",\n                \"path\": self.index_field,\n                \"numDimensions\": self.number_dimensions,\n                \"similarity\": self.similarity,\n                \"quantization\": self.quantization,\n            }\n        ]\n        if self.filter_field:\n            fields.append({\"type\": \"filter\", \"path\": self.filter_field})\n        return SearchIndexModel(definition={\"fields\": fields}, name=self.index_name, type=\"vectorSearch\")\n"
+              },
+              "collection_name": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "display_name": "Collection Name",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "collection_name",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "user_stories"
+              },
+              "db_name": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "display_name": "Database Name",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "db_name",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "RAG_DEMO"
+              },
+              "embedding": {
+                "_input_type": "HandleInput",
+                "advanced": false,
+                "display_name": "Embedding",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Embeddings"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "embedding",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "trace_as_metadata": true,
+                "type": "other",
+                "value": ""
+              },
+              "enable_mtls": {
+                "_input_type": "BoolInput",
+                "advanced": true,
+                "display_name": "Enable mTLS",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "enable_mtls",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "bool",
+                "value": false
+              },
+              "filter_field": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "display_name": "Filter Field",
+                "dynamic": false,
+                "info": "The field to filter the index.",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "filter_field",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "text"
+              },
+              "index_field": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "display_name": "Index Field",
+                "dynamic": false,
+                "info": "The field to index.",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "index_field",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "embedding"
+              },
+              "index_name": {
+                "_input_type": "StrInput",
+                "advanced": false,
+                "display_name": "Index Name",
+                "dynamic": false,
+                "info": "The name of Atlas Search index, it should be a Vector Search.",
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "index_name",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "user_stories_vector_index"
+              },
+              "ingest_data": {
+                "_input_type": "HandleInput",
+                "advanced": false,
+                "display_name": "Ingest Data",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Data",
+                  "DataFrame"
+                ],
+                "list": true,
+                "list_add_label": "Add More",
+                "name": "ingest_data",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "trace_as_metadata": true,
+                "type": "other",
+                "value": ""
+              },
+              "insert_mode": {
+                "_input_type": "DropdownInput",
+                "advanced": true,
+                "combobox": false,
+                "dialog_inputs": {},
+                "display_name": "Insert Mode",
+                "dynamic": false,
+                "external_options": {},
+                "info": "How to insert new documents into the collection.",
+                "name": "insert_mode",
+                "options": [
+                  "append",
+                  "overwrite"
+                ],
+                "options_metadata": [],
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "toggle": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "append"
+              },
+              "mongodb_atlas_client_cert": {
+                "_input_type": "SecretStrInput",
+                "advanced": false,
+                "display_name": "MongoDB Atlas Combined Client Certificate",
+                "dynamic": false,
+                "info": "Client Certificate combined with the private key in the following format:\n -----BEGIN PRIVATE KEY-----\n...\n -----END PRIVATE KEY-----\n-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----\n",
+                "input_types": [],
+                "load_from_db": false,
+                "name": "mongodb_atlas_client_cert",
+                "password": true,
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              },
+              "mongodb_atlas_cluster_uri": {
+                "_input_type": "SecretStrInput",
+                "advanced": false,
+                "display_name": "MongoDB Atlas Cluster URI",
+                "dynamic": false,
+                "info": "",
+                "input_types": [],
+                "load_from_db": false,
+                "name": "mongodb_atlas_cluster_uri",
+                "password": true,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              },
+              "number_dimensions": {
+                "_input_type": "IntInput",
+                "advanced": false,
+                "display_name": "Number of Dimensions",
+                "dynamic": false,
+                "info": "Embedding Context Length.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "number_dimensions",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": 1024
+              },
+              "number_of_results": {
+                "_input_type": "IntInput",
+                "advanced": false,
+                "display_name": "Number of Results",
+                "dynamic": false,
+                "info": "Number of results to return.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "number_of_results",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": 5
+              },
+              "quantization": {
+                "_input_type": "DropdownInput",
+                "advanced": true,
+                "combobox": false,
+                "dialog_inputs": {},
+                "display_name": "Quantization",
+                "dynamic": false,
+                "external_options": {},
+                "info": "Quantization reduces memory costs converting 32-bit floats to smaller data types",
+                "name": "quantization",
+                "options": [
+                  "scalar",
+                  "binary"
+                ],
+                "options_metadata": [],
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "toggle": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str"
+              },
+              "search_query": {
+                "_input_type": "QueryInput",
+                "advanced": false,
+                "display_name": "Search Query",
+                "dynamic": false,
+                "info": "Enter a query to run a similarity search.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "search_query",
+                "placeholder": "Enter a query...",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": true,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "query",
+                "value": "Registration"
+              },
+              "should_cache_vector_store": {
+                "_input_type": "BoolInput",
+                "advanced": true,
+                "display_name": "Cache Vector Store",
+                "dynamic": false,
+                "info": "If True, the vector store will be cached for the current build of the component. This is useful for components that have multiple output methods and want to share the same vector store.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "should_cache_vector_store",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "bool",
+                "value": true
+              },
+              "similarity": {
+                "_input_type": "DropdownInput",
+                "advanced": false,
+                "combobox": false,
+                "dialog_inputs": {},
+                "display_name": "Similarity",
+                "dynamic": false,
+                "external_options": {},
+                "info": "The method used to measure the similarity between vectors.",
+                "name": "similarity",
+                "options": [
+                  "cosine",
+                  "euclidean",
+                  "dotProduct"
+                ],
+                "options_metadata": [],
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "toggle": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "cosine"
+              }
+            },
+            "tool_mode": false
+          },
+          "selected_output": "dataframe",
+          "showNode": true,
+          "type": "MongoDBAtlasVector"
+        },
+        "dragging": false,
+        "id": "MongoDBAtlasVector-LXfVw",
+        "measured": {
+          "height": 1127,
+          "width": 320
+        },
+        "position": {
+          "x": -3868.740366099283,
+          "y": -2364.051693772405
+        },
+        "selected": false,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "MistalAIEmbeddings-WuLes",
+          "node": {
+            "base_classes": [
+              "Embeddings"
+            ],
+            "beta": false,
+            "category": "mistral",
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Generate embeddings using MistralAI models.",
+            "display_name": "MistralAI Embeddings",
+            "documentation": "",
+            "edited": false,
+            "field_order": [
+              "model",
+              "mistral_api_key",
+              "max_concurrent_requests",
+              "max_retries",
+              "timeout",
+              "endpoint"
+            ],
+            "frozen": false,
+            "icon": "MistralAI",
+            "key": "MistalAIEmbeddings",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {
+              "keywords": [
+                "model",
+                "llm",
+                "language model",
+                "large language model"
+              ]
+            },
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Embeddings",
+                "group_outputs": false,
+                "method": "build_embeddings",
+                "name": "embeddings",
+                "selected": "Embeddings",
+                "tool_mode": true,
+                "types": [
+                  "Embeddings"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "score": 0.000007568328950209746,
+            "template": {
+              "_type": "Component",
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from langchain_mistralai.embeddings import MistralAIEmbeddings\nfrom pydantic.v1 import SecretStr\n\nfrom langflow.base.models.model import LCModelComponent\nfrom langflow.field_typing import Embeddings\nfrom langflow.io import DropdownInput, IntInput, MessageTextInput, Output, SecretStrInput\n\n\nclass MistralAIEmbeddingsComponent(LCModelComponent):\n    display_name = \"MistralAI Embeddings\"\n    description = \"Generate embeddings using MistralAI models.\"\n    icon = \"MistralAI\"\n    name = \"MistalAIEmbeddings\"\n\n    inputs = [\n        DropdownInput(\n            name=\"model\",\n            display_name=\"Model\",\n            advanced=False,\n            options=[\"mistral-embed\"],\n            value=\"mistral-embed\",\n        ),\n        SecretStrInput(name=\"mistral_api_key\", display_name=\"Mistral API Key\", required=True),\n        IntInput(\n            name=\"max_concurrent_requests\",\n            display_name=\"Max Concurrent Requests\",\n            advanced=True,\n            value=64,\n        ),\n        IntInput(name=\"max_retries\", display_name=\"Max Retries\", advanced=True, value=5),\n        IntInput(name=\"timeout\", display_name=\"Request Timeout\", advanced=True, value=120),\n        MessageTextInput(\n            name=\"endpoint\",\n            display_name=\"API Endpoint\",\n            advanced=True,\n            value=\"https://api.mistral.ai/v1/\",\n        ),\n    ]\n\n    outputs = [\n        Output(display_name=\"Embeddings\", name=\"embeddings\", method=\"build_embeddings\"),\n    ]\n\n    def build_embeddings(self) -> Embeddings:\n        if not self.mistral_api_key:\n            msg = \"Mistral API Key is required\"\n            raise ValueError(msg)\n\n        api_key = SecretStr(self.mistral_api_key).get_secret_value()\n\n        return MistralAIEmbeddings(\n            api_key=api_key,\n            model=self.model,\n            endpoint=self.endpoint,\n            max_concurrent_requests=self.max_concurrent_requests,\n            max_retries=self.max_retries,\n            timeout=self.timeout,\n        )\n"
+              },
+              "endpoint": {
+                "_input_type": "MessageTextInput",
+                "advanced": true,
+                "display_name": "API Endpoint",
+                "dynamic": false,
+                "info": "",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "endpoint",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "https://api.mistral.ai/v1/"
+              },
+              "max_concurrent_requests": {
+                "_input_type": "IntInput",
+                "advanced": true,
+                "display_name": "Max Concurrent Requests",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "max_concurrent_requests",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": 64
+              },
+              "max_retries": {
+                "_input_type": "IntInput",
+                "advanced": true,
+                "display_name": "Max Retries",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "max_retries",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": 5
+              },
+              "mistral_api_key": {
+                "_input_type": "SecretStrInput",
+                "advanced": false,
+                "display_name": "Mistral API Key",
+                "dynamic": false,
+                "info": "",
+                "input_types": [],
+                "load_from_db": false,
+                "name": "mistral_api_key",
+                "password": true,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "str",
+                "value": ""
+              },
+              "model": {
+                "_input_type": "DropdownInput",
+                "advanced": false,
+                "combobox": false,
+                "dialog_inputs": {},
+                "display_name": "Model",
+                "dynamic": false,
+                "external_options": {},
+                "info": "",
+                "name": "model",
+                "options": [
+                  "mistral-embed"
+                ],
+                "options_metadata": [],
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "toggle": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "mistral-embed"
+              },
+              "timeout": {
+                "_input_type": "IntInput",
+                "advanced": true,
+                "display_name": "Request Timeout",
+                "dynamic": false,
+                "info": "",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "timeout",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "int",
+                "value": 120
+              }
+            },
+            "tool_mode": false
+          },
+          "showNode": true,
+          "type": "MistalAIEmbeddings"
+        },
+        "dragging": false,
+        "id": "MistalAIEmbeddings-WuLes",
+        "measured": {
+          "height": 285,
+          "width": 320
+        },
+        "position": {
+          "x": -4483.62285269769,
+          "y": -2039.8751850645328
+        },
+        "selected": false,
+        "type": "genericNode"
+      },
+      {
+        "data": {
+          "id": "ParserComponent-snS9Y",
+          "node": {
+            "base_classes": [
+              "Message"
+            ],
+            "beta": false,
+            "category": "processing",
+            "conditional_paths": [],
+            "custom_fields": {},
+            "description": "Extracts text using a template.",
+            "display_name": "Parser",
+            "documentation": "https://docs.langflow.org/components-processing#parser",
+            "edited": false,
+            "field_order": [
+              "input_data",
+              "mode",
+              "pattern",
+              "sep"
+            ],
+            "frozen": false,
+            "icon": "braces",
+            "key": "ParserComponent",
+            "last_updated": "2025-11-02T06:05:01.567Z",
+            "legacy": false,
+            "lf_version": "1.6.0",
+            "metadata": {},
+            "minimized": false,
+            "output_types": [],
+            "outputs": [
+              {
+                "allows_loop": false,
+                "cache": true,
+                "display_name": "Parsed Text",
+                "group_outputs": false,
+                "method": "parse_combined_text",
+                "name": "parsed_text",
+                "options": null,
+                "required_inputs": null,
+                "selected": "Message",
+                "tool_mode": true,
+                "types": [
+                  "Message"
+                ],
+                "value": "__UNDEFINED__"
+              }
+            ],
+            "pinned": false,
+            "score": 0.001,
+            "template": {
+              "_type": "Component",
+              "clean_data": {
+                "_input_type": "BoolInput",
+                "advanced": true,
+                "display_name": "Clean Data",
+                "dynamic": false,
+                "info": "Enable to clean the data by removing empty rows and lines in each cell of the DataFrame/ Data object.",
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "clean_data",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "bool",
+                "value": true
+              },
+              "code": {
+                "advanced": true,
+                "dynamic": true,
+                "fileTypes": [],
+                "file_path": "",
+                "info": "",
+                "list": false,
+                "load_from_db": false,
+                "multiline": true,
+                "name": "code",
+                "password": false,
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "type": "code",
+                "value": "from langflow.custom.custom_component.component import Component\nfrom langflow.helpers.data import safe_convert\nfrom langflow.inputs.inputs import BoolInput, HandleInput, MessageTextInput, MultilineInput, TabInput\nfrom langflow.schema.data import Data\nfrom langflow.schema.dataframe import DataFrame\nfrom langflow.schema.message import Message\nfrom langflow.template.field.base import Output\n\n\nclass ParserComponent(Component):\n    display_name = \"Parser\"\n    description = \"Extracts text using a template.\"\n    documentation: str = \"https://docs.langflow.org/components-processing#parser\"\n    icon = \"braces\"\n\n    inputs = [\n        HandleInput(\n            name=\"input_data\",\n            display_name=\"Data or DataFrame\",\n            input_types=[\"DataFrame\", \"Data\"],\n            info=\"Accepts either a DataFrame or a Data object.\",\n            required=True,\n        ),\n        TabInput(\n            name=\"mode\",\n            display_name=\"Mode\",\n            options=[\"Parser\", \"Stringify\"],\n            value=\"Parser\",\n            info=\"Convert into raw string instead of using a template.\",\n            real_time_refresh=True,\n        ),\n        MultilineInput(\n            name=\"pattern\",\n            display_name=\"Template\",\n            info=(\n                \"Use variables within curly brackets to extract column values for DataFrames \"\n                \"or key values for Data.\"\n                \"For example: `Name: {Name}, Age: {Age}, Country: {Country}`\"\n            ),\n            value=\"Text: {text}\",  # Example default\n            dynamic=True,\n            show=True,\n            required=True,\n        ),\n        MessageTextInput(\n            name=\"sep\",\n            display_name=\"Separator\",\n            advanced=True,\n            value=\"\\n\",\n            info=\"String used to separate rows/items.\",\n        ),\n    ]\n\n    outputs = [\n        Output(\n            display_name=\"Parsed Text\",\n            name=\"parsed_text\",\n            info=\"Formatted text output.\",\n            method=\"parse_combined_text\",\n        ),\n    ]\n\n    def update_build_config(self, build_config, field_value, field_name=None):\n        \"\"\"Dynamically hide/show `template` and enforce requirement based on `stringify`.\"\"\"\n        if field_name == \"mode\":\n            build_config[\"pattern\"][\"show\"] = self.mode == \"Parser\"\n            build_config[\"pattern\"][\"required\"] = self.mode == \"Parser\"\n            if field_value:\n                clean_data = BoolInput(\n                    name=\"clean_data\",\n                    display_name=\"Clean Data\",\n                    info=(\n                        \"Enable to clean the data by removing empty rows and lines \"\n                        \"in each cell of the DataFrame/ Data object.\"\n                    ),\n                    value=True,\n                    advanced=True,\n                    required=False,\n                )\n                build_config[\"clean_data\"] = clean_data.to_dict()\n            else:\n                build_config.pop(\"clean_data\", None)\n\n        return build_config\n\n    def _clean_args(self):\n        \"\"\"Prepare arguments based on input type.\"\"\"\n        input_data = self.input_data\n\n        match input_data:\n            case list() if all(isinstance(item, Data) for item in input_data):\n                msg = \"List of Data objects is not supported.\"\n                raise ValueError(msg)\n            case DataFrame():\n                return input_data, None\n            case Data():\n                return None, input_data\n            case dict() if \"data\" in input_data:\n                try:\n                    if \"columns\" in input_data:  # Likely a DataFrame\n                        return DataFrame.from_dict(input_data), None\n                    # Likely a Data object\n                    return None, Data(**input_data)\n                except (TypeError, ValueError, KeyError) as e:\n                    msg = f\"Invalid structured input provided: {e!s}\"\n                    raise ValueError(msg) from e\n            case _:\n                msg = f\"Unsupported input type: {type(input_data)}. Expected DataFrame or Data.\"\n                raise ValueError(msg)\n\n    def parse_combined_text(self) -> Message:\n        \"\"\"Parse all rows/items into a single text or convert input to string if `stringify` is enabled.\"\"\"\n        # Early return for stringify option\n        if self.mode == \"Stringify\":\n            return self.convert_to_string()\n\n        df, data = self._clean_args()\n\n        lines = []\n        if df is not None:\n            for _, row in df.iterrows():\n                formatted_text = self.pattern.format(**row.to_dict())\n                lines.append(formatted_text)\n        elif data is not None:\n            formatted_text = self.pattern.format(**data.data)\n            lines.append(formatted_text)\n\n        combined_text = self.sep.join(lines)\n        self.status = combined_text\n        return Message(text=combined_text)\n\n    def convert_to_string(self) -> Message:\n        \"\"\"Convert input data to string with proper error handling.\"\"\"\n        result = \"\"\n        if isinstance(self.input_data, list):\n            result = \"\\n\".join([safe_convert(item, clean_data=self.clean_data or False) for item in self.input_data])\n        else:\n            result = safe_convert(self.input_data or False)\n        self.log(f\"Converted to string with length: {len(result)}\")\n\n        message = Message(text=result)\n        self.status = message\n        return message\n"
+              },
+              "input_data": {
+                "_input_type": "HandleInput",
+                "advanced": false,
+                "display_name": "Data or DataFrame",
+                "dynamic": false,
+                "info": "Accepts either a DataFrame or a Data object.",
+                "input_types": [
+                  "DataFrame",
+                  "Data"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "name": "input_data",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "trace_as_metadata": true,
+                "type": "other",
+                "value": ""
+              },
+              "mode": {
+                "_input_type": "TabInput",
+                "advanced": false,
+                "display_name": "Mode",
+                "dynamic": false,
+                "info": "Convert into raw string instead of using a template.",
+                "name": "mode",
+                "options": [
+                  "Parser",
+                  "Stringify"
+                ],
+                "placeholder": "",
+                "real_time_refresh": true,
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_metadata": true,
+                "type": "tab",
+                "value": "Parser"
+              },
+              "pattern": {
+                "_input_type": "MultilineInput",
+                "advanced": false,
+                "copy_field": false,
+                "display_name": "Template",
+                "dynamic": true,
+                "info": "Use variables within curly brackets to extract column values for DataFrames or key values for Data.For example: `Name: {Name}, Age: {Age}, Country: {Country}`",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "multiline": true,
+                "name": "pattern",
+                "placeholder": "",
+                "required": true,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "{storyId},{text},{summary},{parentSummary},{acceptanceCriteria},{projectName}"
+              },
+              "sep": {
+                "_input_type": "MessageTextInput",
+                "advanced": true,
+                "display_name": "Separator",
+                "dynamic": false,
+                "info": "String used to separate rows/items.",
+                "input_types": [
+                  "Message"
+                ],
+                "list": false,
+                "list_add_label": "Add More",
+                "load_from_db": false,
+                "name": "sep",
+                "placeholder": "",
+                "required": false,
+                "show": true,
+                "title_case": false,
+                "tool_mode": false,
+                "trace_as_input": true,
+                "trace_as_metadata": true,
+                "type": "str",
+                "value": "\n"
+              }
+            },
+            "tool_mode": false
+          },
+          "showNode": true,
+          "type": "ParserComponent"
+        },
+        "dragging": false,
+        "id": "ParserComponent-snS9Y",
+        "measured": {
+          "height": 327,
+          "width": 320
+        },
+        "position": {
+          "x": -3342.016023640324,
+          "y": -2261.9195588114176
+        },
+        "selected": false,
+        "type": "genericNode"
+      }
+    ],
+    "viewport": {
+      "x": 1702.0822732509582,
+      "y": 1153.3848381618309,
+      "zoom": 0.34993269912734465
+    }
+  },
+  "description": "Create, Curate, Communicate with Langflow.",
+  "endpoint_name": null,
+  "id": "d0332a94-b714-4b36-8e45-8b4b34baa085",
+  "is_component": false,
+  "last_tested_version": "1.6.0",
+  "name": "Retrieve_UserStory_Retreival_Agent",
+  "tags": []
+}

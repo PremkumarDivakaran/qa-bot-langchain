@@ -7,3 +7,11 @@ dist
 documents/*.pdf
 documents/*.docx
 documents/*.doc
+
+# User Stories folder - keep structure but ignore user story files
+user_stories/*.pdf
+user_stories/*.docx
+user_stories/*.doc
+user_stories/*.txt
+user_stories/*.md
+user_stories/*.csv

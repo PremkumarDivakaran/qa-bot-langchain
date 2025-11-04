@@ -1,1 +1,1 @@
-export { ResumeVectorStore, type VectorStoreConfig } from "./resumeVectorStore.js";
+export { UserStoryVectorStore, type UserStoryVectorStoreConfig } from "./userStoryVectorStore.js";

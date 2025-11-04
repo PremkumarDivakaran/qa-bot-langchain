@@ -1,1 +1,1 @@
-export { ingestResumes } from "./pipeline.js";
+export { ingestUserStories } from "./userStoryPipeline.js";

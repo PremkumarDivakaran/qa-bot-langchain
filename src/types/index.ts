@@ -1,9 +1,10 @@
-export type { ResumeData, ExtractionResult, EmbeddingConfig } from "./resume.js";
-export { InvokeSchema, type InvokeBody, type InvokeResult } from "./api.js";
-export { 
-  SearchRequestSchema, 
-  type SearchRequest, 
-  type SearchResultItem, 
-  type SearchResponse, 
-  type ErrorResponse 
-} from "./search.js";
+export type { UserStoryData, UserStoryExtractionResult, UserStoryEmbeddingConfig } from "./userStory.js";
+export type { ErrorResponse } from "./search.js";
+export {
+  UserStoryRetrievalRequestSchema,
+  type UserStoryRetrievalRequest,
+  type StandardizedUserStory,
+  type UserStorySearchResult,
+  type UserStoryRetrievalResponse,
+  type UserStoryRetrievalErrorResponse
+} from "./userStoryRetrieval.js";

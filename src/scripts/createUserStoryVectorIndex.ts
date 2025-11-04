@@ -4,9 +4,9 @@ import dotenv from "dotenv";
 dotenv.config();
 
 /**
- * MongoDB Atlas Vector Search Index Creation Script
+ * MongoDB Atlas Vector Search Index Creation Script for User Stories
  * 
- * This script creates a vector search index for the resumes collection
+ * This script creates a vector search index for the user_stories collection
  * Required for semantic similarity search using embeddings
  * 
  * Prerequisites:
@@ -33,18 +33,18 @@ interface IndexDefinition {
   };
 }
 
-async function createVectorIndex(): Promise<void> {
+async function createUserStoryVectorIndex(): Promise<void> {
   const mongoUri = process.env.MONGODB_URI;
-  const dbName = process.env.MONGODB_DB_NAME || "db_resumes";
-  const collectionName = process.env.MONGODB_COLLECTION || "resumes";
-  const indexName = process.env.MONGODB_VECTOR_INDEX || "resume_vector_index";
+  const dbName = process.env.USER_STORY_DB_NAME || "RAG_DEMO";
+  const collectionName = process.env.USER_STORY_COLLECTION || "user_stories";
+  const indexName = process.env.USER_STORY_VECTOR_INDEX || "user_stories_vector_index";
   const dimension = Number(process.env.EMBEDDING_DIMENSION) || 1024;
 
   if (!mongoUri) {
     throw new Error("MONGODB_URI is not set in .env file");
   }
 
-  console.log("🔧 MongoDB Vector Index Setup\n");
+  console.log("🔧 MongoDB Vector Index Setup for User Stories\n");
   console.log("Configuration:");
   console.log(`  - Database: ${dbName}`);
   console.log(`  - Collection: ${collectionName}`);
@@ -151,19 +151,19 @@ async function createVectorIndex(): Promise<void> {
 }
 
 /**
- * Verify vector index exists and is ready
+ * Verify user story vector index exists and is ready
  */
-async function verifyVectorIndex(): Promise<void> {
+async function verifyUserStoryVectorIndex(): Promise<void> {
   const mongoUri = process.env.MONGODB_URI;
-  const dbName = process.env.MONGODB_DB_NAME || "db_resumes";
-  const collectionName = process.env.MONGODB_COLLECTION || "resumes";
-  const indexName = process.env.MONGODB_VECTOR_INDEX || "resume_vector_index";
+  const dbName = process.env.USER_STORY_DB_NAME || "RAG_DEMO";
+  const collectionName = process.env.USER_STORY_COLLECTION || "user_stories";
+  const indexName = process.env.USER_STORY_VECTOR_INDEX || "user_stories_vector_index";
 
   if (!mongoUri) {
     throw new Error("MONGODB_URI is not set in .env file");
   }
 
-  console.log("\n🔍 Verifying Vector Index\n");
+  console.log("\n🔍 Verifying User Story Vector Index\n");
 
   const client = new MongoClient(mongoUri);
 
@@ -200,9 +200,9 @@ async function main() {
 
   try {
     if (command === "verify") {
-      await verifyVectorIndex();
+      await verifyUserStoryVectorIndex();
     } else {
-      await createVectorIndex();
+      await createUserStoryVectorIndex();
     }
     process.exit(0);
   } catch (error) {
@@ -212,8 +212,8 @@ async function main() {
 }
 
 // Run if executed directly
-if (process.argv[1]?.includes("createVectorIndex")) {
+if (process.argv[1]?.includes("createUserStoryVectorIndex")) {
   main();
 }
 
-export { createVectorIndex, verifyVectorIndex };
+export { createUserStoryVectorIndex, verifyUserStoryVectorIndex };

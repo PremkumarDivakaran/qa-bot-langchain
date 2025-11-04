@@ -41,9 +41,17 @@ export const config = {
   // MongoDB
   mongodb: {
     uri: process.env.MONGODB_URI || "",
-    dbName: process.env.MONGODB_DB_NAME || "db_resumes",
-    collection: process.env.MONGODB_COLLECTION || "resumes",
-    vectorIndexName: process.env.MONGODB_VECTOR_INDEX || "resume_vector_index",
+    dbName: process.env.USER_STORY_DB_NAME || "RAG_DEMO",
+    collection: process.env.USER_STORY_COLLECTION || "user_stories",
+    vectorIndexName: process.env.USER_STORY_VECTOR_INDEX || "user_stories_vector_index",
+  },
+
+  // User Stories MongoDB (for backward compatibility)
+  userStoryMongodb: {
+    uri: process.env.MONGODB_URI || "",
+    dbName: process.env.USER_STORY_DB_NAME || "RAG_DEMO",
+    collection: process.env.USER_STORY_COLLECTION || "user_stories",
+    vectorIndexName: process.env.USER_STORY_VECTOR_INDEX || "user_stories_vector_index",
   },
 
   // Embeddings
@@ -56,6 +64,11 @@ export const config = {
   // Documents
   documents: {
     folder: process.env.DOCUMENTS_FOLDER || "./documents",
+  },
+
+  // User Story Documents
+  userStoryDocuments: {
+    folder: process.env.USER_STORY_DOCUMENTS_FOLDER || "./user_stories",
   },
 
   // Ingestion

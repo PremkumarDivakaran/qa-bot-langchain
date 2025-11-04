@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Story Processing - QA Bot</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-robot"></i>
+                    <h1>QA Bot</h1>
+                </div>
+                <div class="subtitle">
+                    <p>Intelligent User Story Processing, Retrieval & Vector Embeddings</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="nav-tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" data-tab="ingestion">
+                    <i class="fas fa-upload"></i>
+                    <span>Ingestion</span>
+                </button>
+                <button class="tab-btn" data-tab="retrieval">
+                    <i class="fas fa-search"></i>
+                    <span>Retrieval</span>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Tab Contents -->
+            <div class="tab-content">
+                <!-- Ingestion Tab -->
+                <div class="tab-panel active" id="ingestion-panel">
+                    <!-- Server Status -->
+                    <div class="status-card" id="statusCard">
+                        <div class="status-content">
+                            <div class="status-icon">
+                                <i class="fas fa-circle" id="statusIcon"></i>
+                            </div>
+                            <div class="status-text">
+                                <h3 id="statusTitle">Checking server...</h3>
+                                <p id="statusMessage">Connecting to backend services</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upload Section -->
+                    <div class="upload-section">
+                <div class="upload-card">
+                    <div class="upload-header">
+                        <h2>Upload User Stories</h2>
+                        <p>Upload CSV or TXT files containing user stories for AI processing</p>
+                    </div>
+
+                    <!-- Upload Form -->
+                    <form id="uploadForm" class="upload-form">
+                        <!-- File Drop Zone -->
+                        <div class="file-drop-zone" id="dropZone">
+                            <div class="drop-zone-content">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <h3>Drop your files here</h3>
+                                <p>or <span class="browse-link">browse files</span></p>
+                                <input type="file" id="fileInput" accept=".csv,.txt" required>
+                            </div>
+                            
+                            <!-- File Preview -->
+                            <div class="file-preview" id="filePreview" style="display: none;">
+                                <div class="file-info">
+                                    <i class="fas fa-file-alt"></i>
+                                    <div class="file-details">
+                                        <span class="file-name" id="fileName"></span>
+                                        <span class="file-size" id="fileSize"></span>
+                                    </div>
+                                    <button type="button" class="remove-file" id="removeFile">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Options -->
+                        <div class="upload-options">
+                            <div class="option-group">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="clearExisting">
+                                    <span class="checkmark"></span>
+                                    <span class="label-text">Clear existing user stories</span>
+                                </label>
+                                <small class="option-help">
+                                    <i class="fas fa-info-circle"></i>
+                                    This will remove all existing data before importing new stories
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Upload Button -->
+                        <button type="submit" class="upload-btn" id="uploadBtn" disabled>
+                            <i class="fas fa-upload"></i>
+                            <span>Upload & Process</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Progress Section -->
+            <div class="progress-section" id="progressSection" style="display: none;">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <h3>Processing...</h3>
+                        <span class="progress-time" id="progressTime">0s</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-status" id="progressStatus">
+                        Uploading file...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-card">
+                    <div class="results-header">
+                        <div class="result-icon" id="resultIcon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3 id="resultTitle">Upload Complete</h3>
+                    </div>
+                    
+                    <div class="results-content" id="resultsContent">
+                        <!-- Results will be populated by JavaScript -->
+                    </div>
+
+                    <div class="results-actions">
+                        <button type="button" class="btn-secondary" id="uploadAnotherBtn">
+                            <i class="fas fa-plus"></i>
+                            Upload Another File
+                        </button>
+                        <button type="button" class="btn-primary" id="viewDataBtn">
+                            <i class="fas fa-eye"></i>
+                            View Processed Data
+                        </button>
+                    </div>
+                </div>
+            </div>
+                </div>
+
+                <!-- Retrieval Tab -->
+                <div class="tab-panel" id="retrieval-panel">
+                    <!-- Retrieval Section -->
+                    <div class="retrieval-section">
+                        <div class="retrieval-card">
+                            <div class="retrieval-header">
+                                <h2>User Story Retrieval & Standardization</h2>
+                                <p>Enter a user story to get a standardized version with relevant examples</p>
+                            </div>
+
+                            <!-- Retrieval Form -->
+                            <form id="retrievalForm" class="retrieval-form">
+                                <!-- Input Section -->
+                                <div class="input-section">
+                                    <label for="userStoryInput" class="input-label">
+                                        <i class="fas fa-edit"></i>
+                                        User Story Input
+                                    </label>
+                                    <textarea 
+                                        id="userStoryInput" 
+                                        class="user-story-input" 
+                                        placeholder="Enter your user story here... (e.g., As a nurse, I want to manage patient registration so that I can track patient information)"
+                                        rows="4"
+                                        required
+                                    ></textarea>
+                                    
+                                    <div class="input-options">
+                                        <div class="option-group">
+                                            <label for="relevantStoriesLimit" class="select-label">
+                                                <i class="fas fa-list-ol"></i>
+                                                Relevant Stories Limit
+                                            </label>
+                                            <select id="relevantStoriesLimit" class="limit-select">
+                                                <option value="3">3 stories</option>
+                                                <option value="5" selected>5 stories</option>
+                                                <option value="7">7 stories</option>
+                                                <option value="10">10 stories</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <button type="submit" class="retrieve-btn" id="retrieveBtn">
+                                    <i class="fas fa-magic"></i>
+                                    <span>Generate Standardized User Story</span>
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Retrieval Progress Section -->
+                    <div class="retrieval-progress-section" id="retrievalProgressSection" style="display: none;">
+                        <div class="progress-card">
+                            <div class="progress-header">
+                                <h3>Processing User Story...</h3>
+                                <span class="progress-time" id="retrievalProgressTime">0s</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" id="retrievalProgressFill"></div>
+                            </div>
+                            <div class="progress-status" id="retrievalProgressStatus">
+                                Performing vector search...
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Retrieval Results Section -->
+                    <div class="retrieval-results-section" id="retrievalResultsSection" style="display: none;">
+                        <div class="retrieval-results-card">
+                            <div class="results-header">
+                                <div class="result-icon">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <h3>User Story Generated Successfully</h3>
+                            </div>
+                            
+                            <!-- Generated User Story -->
+                            <div class="generated-story-section" id="generatedStorySection">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-star"></i> Standardized User Story</h4>
+                                    <div class="quality-score" id="qualityScore">
+                                        <span class="score-label">Quality Score:</span>
+                                        <span class="score-value" id="scoreValue">85/100</span>
+                                    </div>
+                                </div>
+                                <div class="story-content" id="storyContent">
+                                    <!-- Generated story will be populated here -->
+                                </div>
+                            </div>
+
+                            <!-- Relevant Stories Table -->
+                            <div class="relevant-stories-section" id="relevantStoriesSection">
+                                <div class="section-header">
+                                    <h4><i class="fas fa-database"></i> Relevant User Stories from Database</h4>
+                                    <span class="result-count" id="resultCount">Found 3 stories</span>
+                                </div>
+                                <div class="stories-table-container">
+                                    <table class="stories-table" id="storiesTable">
+                                        <thead>
+                                            <tr>
+                                                <th>Story ID</th>
+                                                <th>Title</th>
+                                                <th>Description</th>
+                                                <th>Priority</th>
+                                                <th>Category</th>
+                                                <th>Similarity</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="storiesTableBody">
+                                            <!-- Relevant stories will be populated here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="results-actions">
+                                <button type="button" class="btn-secondary" id="generateAnotherBtn">
+                                    <i class="fas fa-plus"></i>
+                                    Generate Another Story
+                                </button>
+                                <button type="button" class="btn-primary" id="exportStoryBtn">
+                                    <i class="fas fa-download"></i>
+                                    Export as JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2025 QA Bot. Powered by LangChain & MongoDB Atlas Vector Search</p>
+                <div class="footer-links">
+                    <a href="#" class="footer-link">Documentation</a>
+                    <a href="#" class="footer-link">API Reference</a>
+                    <a href="#" class="footer-link">Support</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay" style="display: none;">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Processing your request...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
