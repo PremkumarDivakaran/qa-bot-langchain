@@ -96,7 +96,7 @@ export class UserStoryRetrievalService {
       // Step 7: Parse LLM response to extract standardized user story and score
       logger.status(traceId, "Step 7: Parsing LLM response and extracting user story fields", "🔧");
       logger.detailed(traceId, "Step 7: Parsing LLM response and extracting fields", "🔧");
-      const { createdUserStory, score } = this.parseLLMResponse(llmResponse, searchResults);
+      const { createdUserStory, score } = this.parseLLMResponse(llmResponse, searchResults, userInput);
       logger.detailed(traceId, `Generated user story ID: ${createdUserStory.storyId}`);
       logger.detailed(traceId, `Quality score: ${score}/100`);
 
@@ -343,7 +343,15 @@ Expected Result:
    - createdDate
    - lastModifiedDate
 2. Include relevant existing user stories from the vector DB in the same format. **Do not modify their storyId, summary, or other fields.**
-3. Provide a score (0–100) for the created user story based on business value, completeness, and adherence to the standard format.
+3. Provide a score (0–100) for the created user story based on:
+   - **Input Quality (0-40 points)**: 
+     * Nonsensical input (like random characters): 0-15 points
+     * Incomplete sentences: 15-25 points  
+     * Basic but unclear requests: 25-35 points
+     * Well-formed user story structure: 35-40 points
+   - **Business Value (0-30 points)**: Clear purpose and user benefit
+   - **Completeness (0-30 points)**: All required fields properly filled
+   **Be strict with scoring - poor input should receive 15 points or less.**
 4. Ensure output is readable, properly structured, and suitable for ingestion into MongoDB or CSV.
 
 Tone:
@@ -374,16 +382,25 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
   /**
    * Parse LLM response to extract standardized user story and score
    */
-  private parseLLMResponse(llmResponse: string, vectorDbResults?: UserStorySearchResult[]): { 
+  private parseLLMResponse(
+    llmResponse: string, 
+    vectorDbResults?: UserStorySearchResult[], 
+    originalInput?: string
+  ): { 
     createdUserStory: StandardizedUserStory, 
     score: number 
   } {
     // This is a simplified parser - in production, you might want more robust parsing
     const currentDate = new Date().toISOString();
     
-    // Extract score (look for patterns like "Score: 85" or "85/100")
-    const scoreMatch = llmResponse.match(/(?:score|rating):\s*(\d+)|(\d+)\/100|(\d+)\s*out\s*of\s*100/i);
-    const score = scoreMatch ? parseInt(scoreMatch[1] || scoreMatch[2] || scoreMatch[3]) : 75;
+    // Always use our enhanced quality scoring algorithm instead of LLM-provided scores
+    // This ensures consistent and strict validation of required fields
+    let score = this.calculateInputQualityScore(llmResponse, vectorDbResults, originalInput);
+    
+    // Ensure score is within valid range
+    score = Math.max(0, Math.min(100, score));
+    
+    logger.detailed('Score calculation completed', `Enhanced scoring algorithm gave: ${score}/100`);
 
     // Get fallback values from vector DB results
     const vectorDbFallbacks = this.getVectorDbFallbacks(vectorDbResults);
@@ -501,5 +518,103 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
       return match[1].replace(/^[*:\s]+/, '').trim();
     }
     return null;
+  }
+
+  /**
+   * Calculate input quality score based on user input characteristics
+   */
+  private calculateInputQualityScore(
+    llmResponse: string, 
+    vectorDbResults?: UserStorySearchResult[], 
+    originalInput?: string
+  ): number {
+    let score = 50; // Start with a neutral base score
+    
+    // Use original input if provided, otherwise try to extract from LLM response
+    let userInput = originalInput;
+    if (!userInput) {
+      const userInputMatch = llmResponse.match(/user input[:\s]*["]?([^"\\n]+)["]?/i);
+      userInput = userInputMatch ? userInputMatch[1].trim() : '';
+    }
+    
+    // If we still don't have user input, return low score
+    if (!userInput) {
+      return 20;
+    }
+    const checks = {
+      // Basic structure and length
+      hasMinLength: userInput.length >= 10,
+      hasReasonableLength: userInput.length >= 20,
+      hasUserStoryStructure: /as\s+(a|an)\s+\w+/i.test(userInput),
+      hasWantStatement: /want\s+to/i.test(userInput),
+      hasSoThatClause: /so\s+that/i.test(userInput),
+      
+      // Content quality
+      hasValidWords: !/^[^a-zA-Z]*$/.test(userInput), // Not just symbols/numbers
+      hasRepeatedChars: !/(.)\1{4,}/.test(userInput), // No repeated chars like "aaaa"
+      isNotGibberish: !/^[a-z]{1,5}$/i.test(userInput.replace(/\s/g, '')), // Not like "adadf"
+      hasVowels: /[aeiou]/i.test(userInput),
+      hasCommonWords: /\b(user|system|want|need|should|can|will|the|and|or|is|are)\b/i.test(userInput),
+      
+      // Domain relevance (if healthcare context)
+      hasDomainRelevance: vectorDbResults && vectorDbResults.length > 0,
+      hasBusinessValue: /\b(manage|create|view|update|delete|process|handle|track|monitor|report)\b/i.test(userInput)
+    };
+    
+    // Score calculation
+    if (!checks.hasValidWords || !checks.hasVowels) {
+      return 10; // Very poor input like "adadf"
+    }
+    
+    if (!checks.hasMinLength || !checks.isNotGibberish) {
+      return 15; // Poor input - includes gibberish like "adadf"
+    }
+    
+    if (!checks.hasReasonableLength) {
+      score -= 20;
+    }
+    
+    // User story structure scoring
+    if (checks.hasUserStoryStructure) score += 20;
+    if (checks.hasWantStatement) score += 15;
+    if (checks.hasSoThatClause) score += 10;
+    
+    // Content quality scoring
+    if (checks.hasRepeatedChars) score -= 15;
+    if (checks.hasCommonWords) score += 10;
+    if (checks.hasBusinessValue) score += 15;
+    
+    // Domain relevance
+    if (checks.hasDomainRelevance) score += 10;
+    
+    // CRITICAL: LLM response quality - these are REQUIRED fields, not optional bonuses
+    const hasValidSummary = this.extractField(llmResponse, 'summary') !== null;
+    const hasValidDescription = this.extractField(llmResponse, 'description') !== null;
+    const hasValidCriteria = this.extractField(llmResponse, 'acceptanceCriteria') !== null;
+    const hasValidProject = this.extractField(llmResponse, 'project') !== null;
+    const hasValidPriority = this.extractField(llmResponse, 'priority') !== null;
+    const hasValidRiskLevel = this.extractField(llmResponse, 'riskLevel') !== null;
+    
+    // Count missing required fields
+    const requiredFields = [hasValidSummary, hasValidDescription, hasValidCriteria, hasValidProject, hasValidPriority, hasValidRiskLevel];
+    const missingFieldsCount = requiredFields.filter(field => !field).length;
+    
+    // Severe penalties for missing required fields
+    if (missingFieldsCount >= 5) {
+      return Math.max(5, score - 60); // Missing 5+ fields = massive penalty
+    } else if (missingFieldsCount >= 3) {
+      return Math.max(10, score - 40); // Missing 3-4 fields = major penalty
+    } else if (missingFieldsCount >= 1) {
+      score -= (missingFieldsCount * 15); // 15 points penalty per missing field
+    }
+    
+    // Only give bonuses if all required fields are present
+    if (missingFieldsCount === 0) {
+      score += 20; // Bonus for having all required fields
+    }
+    
+    logger.detailed('Quality scoring breakdown', `missing ${missingFieldsCount}/6 required fields, final score: ${Math.max(5, Math.min(100, score))}`);
+    
+    return Math.max(5, Math.min(100, score)); // Ensure score is between 5-100
   }
 }
