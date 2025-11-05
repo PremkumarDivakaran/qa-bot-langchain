@@ -11,6 +11,7 @@ import {
   UserStoryRetrievalErrorResponse
 } from "./types/index.js";
 import { config } from "./config/index.js";
+import { logger } from "./utils/logger.js";
 import { 
   runUserStoryIngestion, 
   saveUploadedFile, 
@@ -80,8 +81,8 @@ app.post("/ingest/user-stories", upload.single("file"), async (req, res) => {
   const startTime = Date.now();
 
   try {
-    console.log(`\n[${traceId}] === INGESTION REQUEST RECEIVED ===`);
-    console.log(`Timestamp: ${new Date().toISOString()}`);
+    logger.detailed(traceId, "=== INGESTION REQUEST RECEIVED ===");
+    logger.detailed(traceId, `Timestamp: ${new Date().toISOString()}`);
 
     // Check if file was uploaded
     if (!req.file) {
@@ -92,10 +93,10 @@ app.post("/ingest/user-stories", upload.single("file"), async (req, res) => {
       });
     }
 
-    console.log(`[${traceId}] File received:`);
-    console.log(`  - Original name: ${req.file.originalname}`);
-    console.log(`  - Size: ${req.file.size} bytes`);
-    console.log(`  - MIME type: ${req.file.mimetype}`);
+    logger.detailed(traceId, "File received:");
+    logger.detailed(traceId, `  - Original name: ${req.file.originalname}`);
+    logger.detailed(traceId, `  - Size: ${req.file.size} bytes`);
+    logger.detailed(traceId, `  - MIME type: ${req.file.mimetype}`);
 
     // Validate file type
     if (!validateFileType(req.file.mimetype, req.file.originalname)) {
@@ -108,7 +109,7 @@ app.post("/ingest/user-stories", upload.single("file"), async (req, res) => {
 
     // Save uploaded file
     const fileName = await saveUploadedFile(req.file.buffer, req.file.originalname);
-    console.log(`[${traceId}] File saved as: ${fileName}`);
+    logger.detailed(traceId, `File saved as: ${fileName}`);
 
     // Parse query parameters and form data
     // FormData sends everything as strings, so we need to check for string values
@@ -120,8 +121,8 @@ app.post("/ingest/user-stories", upload.single("file"), async (req, res) => {
     
     const clear = clearFromQuery || clearFromBody || clearExistingFromBody;
     
-    console.log(`[${traceId}] Starting ingestion...`);
-    console.log(`  - Clear existing: ${clear}`);
+    logger.detailed(traceId, "Starting ingestion...");
+    logger.detailed(traceId, `  - Clear existing: ${clear}`);
 
     // Run ingestion
     const result: IngestionResult = await runUserStoryIngestion({
@@ -132,7 +133,7 @@ app.post("/ingest/user-stories", upload.single("file"), async (req, res) => {
     const duration = Date.now() - startTime;
 
     if (result.success) {
-      console.log(`[${traceId}] Ingestion completed successfully in ${duration}ms`);
+      logger.status(traceId, `Ingestion completed successfully in ${duration}ms`);
       
       // Use actual ingestion statistics
       const ingestionStats = result.ingestionStats;
@@ -206,16 +207,16 @@ app.post("/retrieve/user-stories", async (req, res) => {
   const startTime = Date.now();
 
   try {
-    console.log(`\n[${traceId}] === USER STORY RETRIEVAL REQUEST ===`);
-    console.log(`Timestamp: ${new Date().toISOString()}`);
-    console.log(`Request Body:`, JSON.stringify(req.body, null, 2));
+    logger.detailed(traceId, `=== USER STORY RETRIEVAL REQUEST ===`);
+    logger.detailed(traceId, `Timestamp: ${new Date().toISOString()}`);
+    logger.detailed(traceId, `Request Body: ${JSON.stringify(req.body, null, 2)}`);
 
     // Validate request
     const parsed = UserStoryRetrievalRequestSchema.parse(req.body as UserStoryRetrievalRequest);
     
-    console.log(`[${traceId}] Request validated`);
-    console.log(`  User Input: "${parsed.userInput}"`);
-    console.log(`  Relevant Stories Limit: ${parsed.relevantStoriesLimit}`);
+    logger.detailed(traceId, `Request validated`);
+    logger.detailed(traceId, `User Input: "${parsed.userInput}"`);
+    logger.detailed(traceId, `Relevant Stories Limit: ${parsed.relevantStoriesLimit}`);
 
     // Check if retrieval service is initialized
     if (!retrievalService) {
@@ -232,13 +233,13 @@ app.post("/retrieve/user-stories", async (req, res) => {
     const duration = Date.now() - startTime;
     result.duration = duration;
 
-    console.log(`[${traceId}] Retrieval completed in ${duration}ms`);
-    console.log(`[${traceId}] Created user story ID: ${result.createdUserStory.storyId}`);
-    console.log(`[${traceId}] Found ${result.relevantUserStories.length} relevant stories`);
-    console.log(`[${traceId}] Generated score: ${result.score}/100`);
+    logger.status(traceId, `Retrieval completed in ${duration}ms`);
+    logger.detailed(traceId, `Created user story ID: ${result.createdUserStory.storyId}`);
+    logger.detailed(traceId, `Found ${result.relevantUserStories.length} relevant stories`);
+    logger.detailed(traceId, `Generated score: ${result.score}/100`);
 
-    console.log(`📤 [${traceId}] Sending response to client`);
-    console.log(`====================================\n`);
+    logger.detailed(traceId, `📤 Sending response to client`);
+    logger.detailed(traceId, `====================================`);
 
     res.json(result);
   } catch (err: any) {

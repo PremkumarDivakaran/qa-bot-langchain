@@ -89,6 +89,11 @@ export const config = {
     retrievalTopK: Number(process.env.LLM_RETRIEVAL_TOP_K) || 10, // Retrieve more for LLM to filter
   },
 
+  // Logging Configuration
+  logging: {
+    enableDetailedLogs: process.env.ENABLE_DETAILED_LOGS === "true", // true = detailed logs, false = overview only
+  },
+
   // Server
   server: {
     url: process.env.SERVER_URL || "http://localhost:8787",

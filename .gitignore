@@ -162,3 +162,20 @@ temp/
 *.rar
 *.tar
 *.zip
+
+# Test and temporary files
+test.html
+simple.html
+**/test*.html
+**/temp*
+**/*.tmp
+**/*.test.*
+**/*.spec.*
+**/debug*
+**/*.log
+**/*.bak
+**/scratch*
+**/playground*
+
+# Platform-specific files
+*.bat  # Windows batch files (project runs on Unix/macOS)

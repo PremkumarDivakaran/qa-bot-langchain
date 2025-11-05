@@ -3,6 +3,7 @@ import { Document } from "@langchain/core/documents";
 import { MongoClient } from "mongodb";
 import { MongoDBAtlasVectorSearch } from "@langchain/mongodb";
 import { createEmbeddings } from "../embeddings/index.js";
+import { logger } from "../../utils/logger.js";
 
 export interface UserStoryVectorStoreConfig {
   mongoUri: string;
@@ -42,7 +43,7 @@ export class UserStoryVectorStore {
         apiKey: this.config.apiKey,
       });
       
-      console.log(`Initialized ${this.config.embeddingProvider} embeddings (${this.config.embeddingModel})`);
+      logger.detailed('vector-store', `Initialized ${this.config.embeddingProvider} embeddings (${this.config.embeddingModel})`);
       
       await this.client.connect();
       
@@ -58,7 +59,7 @@ export class UserStoryVectorStore {
         embeddingKey: "embedding"
       });
 
-      console.log(`Connected to MongoDB Vector Store: ${this.config.dbName}.${this.config.collectionName}`);
+      logger.detailed('vector-store', `Connected to MongoDB Vector Store: ${this.config.dbName}.${this.config.collectionName}`);
     } catch (error) {
       throw new Error(`Failed to initialize vector store: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -81,7 +82,7 @@ export class UserStoryVectorStore {
     }
 
     if (userStories.length === 0) {
-      console.log("No user stories to add");
+      logger.detailed('vector-store', "No user stories to add");
       return;
     }
 
@@ -101,13 +102,13 @@ export class UserStoryVectorStore {
     );
 
     try {
-      console.log(`Generating embeddings for ${userStories.length} user stories...`);
+      logger.detailed('vector-store', `Generating embeddings for ${userStories.length} user stories...`);
       const startTime = Date.now();
       
       await this.vectorStore.addDocuments(documents);
       
       const duration = Date.now() - startTime;
-      console.log(`✓ Added ${userStories.length} user stories with embeddings (${duration}ms)`);
+      logger.detailed('vector-store', `✓ Added ${userStories.length} user stories with embeddings (${duration}ms)`);
     } catch (error) {
       throw new Error(`Failed to add user stories: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -134,11 +135,11 @@ export class UserStoryVectorStore {
     }
 
     if (userStories.length === 0) {
-      console.log("No user stories to add");
+      logger.detailed('vector-store', "No user stories to add");
       return;
     }
 
-    console.log(`Processing ${userStories.length} user stories in batches of ${batchSize}...`);
+    logger.detailed('vector-store', `Processing ${userStories.length} user stories in batches of ${batchSize}...`);
     const startTime = Date.now();
 
     // Split into batches
@@ -179,7 +180,7 @@ export class UserStoryVectorStore {
             throw new Error("Vector store not initialized during batch processing");
           }
           await this.vectorStore.addDocuments(documents);
-          console.log(`✓ Batch ${actualBatchIndex + 1}/${batches.length} completed (${batch.length} user stories)`);
+          logger.detailed('vector-store', `✓ Batch ${actualBatchIndex + 1}/${batches.length} completed (${batch.length} user stories)`);
           return { success: true, count: batch.length };
         } catch (error) {
           console.error(`✗ Batch ${actualBatchIndex + 1} failed:`, error instanceof Error ? error.message : String(error));
@@ -201,11 +202,11 @@ export class UserStoryVectorStore {
     }
 
     const duration = Date.now() - startTime;
-    console.log(`\n✓ Batch processing complete:`);
-    console.log(`  - Successful: ${successCount} user stories`);
-    console.log(`  - Failed: ${failureCount} batches`);
-    console.log(`  - Duration: ${duration}ms`);
-    console.log(`  - Average: ${(duration / userStories.length).toFixed(2)}ms per user story`);
+    logger.detailed('vector-store', `\n✓ Batch processing complete:`);
+    logger.detailed('vector-store', `  - Successful: ${successCount} user stories`);
+    logger.detailed('vector-store', `  - Failed: ${failureCount} batches`);
+    logger.detailed('vector-store', `  - Duration: ${duration}ms`);
+    logger.detailed('vector-store', `  - Average: ${(duration / userStories.length).toFixed(2)}ms per user story`);
 
     if (failureCount > 0) {
       throw new Error(`${failureCount} batch(es) failed during processing`);
@@ -254,7 +255,7 @@ export class UserStoryVectorStore {
         .collection(this.config.collectionName);
       
       const result = await collection.deleteMany({});
-      console.log(`Cleared ${result.deletedCount} documents from collection`);
+      logger.detailed('vector-store', `Cleared ${result.deletedCount} documents from collection`);
     } catch (error) {
       throw new Error(`Failed to clear collection: ${error instanceof Error ? error.message : String(error)}`);
     }
@@ -282,7 +283,7 @@ export class UserStoryVectorStore {
         }
       }
       
-      console.log(`Found ${existingIds.size} existing user story IDs in database`);
+      logger.detailed('vector-store', `Found ${existingIds.size} existing user story IDs in database`);
       return existingIds;
     } catch (error) {
       console.error("Error checking existing user stories:", error);
@@ -303,7 +304,7 @@ export class UserStoryVectorStore {
         "metadata.storyId": { $in: storyIds }
       });
       
-      console.log(`Removed ${result.deletedCount} existing user stories to prevent duplicates`);
+      logger.detailed('vector-store', `Removed ${result.deletedCount} existing user stories to prevent duplicates`);
       return result.deletedCount;
     } catch (error) {
       console.error("Error removing existing user stories:", error);
@@ -331,11 +332,11 @@ export class UserStoryVectorStore {
     }
 
     if (userStories.length === 0) {
-      console.log("No user stories to add");
+      logger.detailed('vector-store', "No user stories to add");
       return { added: 0, skipped: 0, removed: 0 };
     }
 
-    console.log(`🔍 Checking for duplicates among ${userStories.length} user stories...`);
+    logger.detailed('vector-store', `🔍 Checking for duplicates among ${userStories.length} user stories...`);
     
     // Get existing user story IDs
     const existingIds = await this.getExistingUserStoryIds();
@@ -357,7 +358,7 @@ export class UserStoryVectorStore {
     // Remove existing duplicates
     let removedCount = 0;
     if (duplicateIds.length > 0) {
-      console.log(`🗑️ Removing ${duplicateIds.length} existing user stories to prevent duplicates...`);
+      logger.detailed('vector-store', `🗑️ Removing ${duplicateIds.length} existing user stories to prevent duplicates...`);
       removedCount = await this.removeUserStoriesByIds(duplicateIds);
     }
 
@@ -372,7 +373,7 @@ export class UserStoryVectorStore {
       storyId: story.storyId!
     })), batchSize);
 
-    console.log(`✅ Deduplication complete: ${storiesToAdd.length} added, ${removedCount} duplicates replaced`);
+    logger.detailed('vector-store', `✅ Deduplication complete: ${storiesToAdd.length} added, ${removedCount} duplicates replaced`);
     
     return {
       added: storiesToAdd.length,
@@ -386,7 +387,7 @@ export class UserStoryVectorStore {
    */
   async close(): Promise<void> {
     await this.client.close();
-    console.log("MongoDB connection closed");
+    logger.detailed('vector-store', "MongoDB connection closed");
   }
 
   /**

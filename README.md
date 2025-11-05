@@ -72,6 +72,9 @@ EMBEDDING_DIMENSION=1024
 LLM_RERANKING_ENABLED=false  
 LLM_RETRIEVAL_TOP_K=25          
 
+# Logging Configuration
+ENABLE_DETAILED_LOGS=false
+
 # Documents Configuration
 DOCUMENTS_FOLDER=./documents
 
@@ -247,7 +250,67 @@ US-002,Data Export,As an admin I want to export data,Data export functionality,M
 - `Category`, `Epic`, `Feature`: Story categorization
 - `Status`: Active, Pending, Done, etc.
 
-## 🧪 Testing
+## 🔄 User Story Retrieval Process
+
+### Simple Process Flow
+**User Input → Vector Embedding → Vector DB Search → LLM Analysis → Standardized Output**
+
+### Detailed Steps
+
+#### 1. **User Input** 📝
+- User enters a user story (e.g., "As a nurse, I want to manage patient registration")
+
+#### 2. **Convert to Vector** �
+- System converts user input to a 1024-dimension vector using Mistral AI embeddings
+- This vector represents the "meaning" of the user story
+
+#### 3. **Semantic Search in Vector DB** 🔍
+- System searches MongoDB Atlas Vector Search index for similar vectors
+- Finds user stories with similar "meaning" (not just matching words)
+- Returns top similar stories with similarity scores
+
+#### 4. **LLM Processing with Prompt Template** 🤖
+- System uses a structured prompt template that includes:
+  - **Instructions**: Clear guidance for the LLM
+  - **Context**: User input + similar stories from vector search
+  - **Expected Format**: Standardized fields (summary, priority, risk, etc.)
+  - **Constraints**: Must use P1/P2/P3/P4 priority format from existing data
+  - **Persona**: Expert assistant with healthcare domain knowledge
+
+**Prompt Template Structure:**
+```
+Instruction: [Role and guidelines]
+Question: [Format user story task]
+Context: 
+  - User Input: [Original story]
+  - Vector DB Fetch: [Similar stories from step 3]
+Expected Result: [Standardized fields + relevance scoring]
+Tone: [Professional, factual]
+Output Format: [Clear structure requirements]
+Persona: [QA/Healthcare expert]
+```
+
+#### 5. **Field Extraction & Formatting** ✨
+- System extracts specific fields from LLM response:
+  - Story ID, Summary, Description, Acceptance Criteria, Priority, Risk Level
+- Converts priority to P1/P2/P3/P4 format based on vector DB patterns
+- Cleans up any extra characters (*:) from LLM output
+
+#### 6. **Quality Scoring** 📊
+- LLM provides a quality score (0-100) for the generated story
+- Based on completeness, clarity, and adherence to user story standards
+
+#### 7. **Return Results** 📤
+- System returns:
+  - **Generated Story**: New standardized user story
+  - **Similar Stories**: List of relevant existing stories with scores
+  - **Quality Score**: AI assessment of the generated story
+
+### Key Features
+- ✅ **Data-Driven**: Based on existing story patterns in vector DB
+- ✅ **Contextual**: Uses semantic similarity, not just keyword matching  
+- ✅ **Standardized**: Consistent P1-P4 priority format and field structure
+- ✅ **Quality Assured**: AI-powered scoring and validation
 
 ### Manual Testing
 1. **Access the UI**: http://localhost:3000
@@ -298,6 +361,132 @@ Expected: Quality score 80-95, admin/reporting stories
   "collection": "user_stories"
 }
 ```
+
+## 📋 Logging System
+
+The system features a sophisticated two-tier logging system that provides both overview and detailed insights based on your needs.
+
+### Configuration
+Control logging verbosity with a single environment variable:
+
+```bash
+# Overview mode: Clean, progress-focused logs
+ENABLE_DETAILED_LOGS=false
+
+# Detailed mode: Comprehensive logging with payloads and step-by-step details
+ENABLE_DETAILED_LOGS=true
+```
+
+### Overview Mode (`ENABLE_DETAILED_LOGS=false`)
+Perfect for production and clean monitoring. Shows essential progress and status information.
+
+**Ingestion Pipeline:**
+```
+[API] 🚀 Starting user story ingestion pipeline with vector embeddings
+[API] 📊 Configuration:
+[API]   - Database: RAG_DEMO.user_stories
+[API]   - Embedding Provider: mistral
+[API]   - Embedding Model: mistral-embed
+[API]   - Dimension: 1024
+[API] [STATUS] 🚀 === USER STORY INGESTION PIPELINE STARTED ===
+[API] 🗑️  Clearing existing user stories...
+[API] 📂 Reading documents from: ./user_stories
+[API] ✓ Found 1 user story file(s)
+[API] 📝 Processing user stories...
+[API] [STATUS] 📄 Processing file: userstories_ingestion.csv
+[API] [STATUS] 🔄 Generating embeddings and storing 190 user story(ies)
+[API] [STATUS] ✅ === USER STORY INGESTION COMPLETE ===
+[API]   - Warnings: 0
+[API] [STATUS] Ingestion completed successfully in 3498ms
+```
+
+**Retrieval Pipeline:**
+```
+[API] [STATUS] 🚀 === USER STORY RETRIEVAL PROCESS STARTED ===
+[API] [STATUS] 📝 Step 1: User input received: "As a nurse, I want to manage patient registration"
+[API] [STATUS] 🎯 Step 2: Relevant stories limit set to: 5
+[API] [STATUS] 🔍 Step 3: Converting input to embeddings and performing vector search
+[API] [STATUS] 🤖 Step 3.2: Applying LLM re-ranking to improve relevance
+[API] [STATUS] 📋 Step 4: Formatting search results for LLM prompt
+[API] [STATUS] 🤖 Step 5: Generating standardized user story with LLM
+[API] [STATUS] 🔧 Step 6: Parsing LLM response and extracting user story fields
+[API] [STATUS] ✅ Retrieval completed in 23742ms
+```
+
+### Detailed Mode (`ENABLE_DETAILED_LOGS=true`)
+Comprehensive logging for development, debugging, and system analysis. Includes all overview logs plus detailed information.
+
+**Additional Ingestion Details:**
+- Individual row processing with full CSV payloads
+- Extraction details for each user story
+- Batch processing information
+- Complete statistics breakdown
+- Detailed error and warning information
+- MongoDB connection and indexing details
+
+**Additional Retrieval Details:**
+- Vector search configuration and parameters
+- Initial search results with similarity scores
+- LLM re-ranking process with document scores
+- Complete prompt templates and LLM responses
+- Document conversion and formatting steps
+- Quality scoring breakdown
+
+**Example Detailed Log Excerpt:**
+```
+[API] [DETAILED] Step 3: Starting vector search process
+[API] [DETAILED] LLM Re-ranking: ENABLED
+[API] [DETAILED] Initial vector search count: 25
+[API] [DETAILED] Final results needed: 5
+[API] [DETAILED] Vector search returned 25 initial results
+[API] [DETAILED] Initial Results Summary:
+[API] [DETAILED]   1. HC-220 - "Nurse Activities Nurse Notes" (score: 0.856)
+[API] [DETAILED]   2. HC-189 - "Nurse Dashboard View Request" (score: 0.834)
+[API] [DETAILED] Step 3.2: Starting LLM re-ranking process
+[API] [DETAILED] Re-ranking 25 documents to select top 5
+[API] [DETAILED] LLM re-ranking completed. Final count: 5
+```
+
+### Log Levels and Components
+
+#### Status Logs (Always Visible)
+- **PURPOSE**: Essential progress tracking and system status
+- **AUDIENCE**: Operations, monitoring, production
+- **FORMAT**: `[STATUS] [traceId] 🚀 message`
+
+#### Detailed Logs (Conditional)
+- **PURPOSE**: Development, debugging, performance analysis
+- **AUDIENCE**: Developers, system administrators
+- **FORMAT**: `[DETAILED] [traceId] detailed information`
+
+#### Error Logs (Always Visible)
+- **PURPOSE**: Error tracking and troubleshooting
+- **AUDIENCE**: All stakeholders
+- **FORMAT**: `[ERROR] [traceId] ❌ error message`
+
+### Trace IDs
+Every request gets a unique trace ID for end-to-end tracking:
+```
+Format: operation_timestamp_randomstring
+Example: retrieve_1762323738614_kk5obo7jh
+```
+
+### Best Practices
+
+#### Production Environments
+- Set `ENABLE_DETAILED_LOGS=false`
+- Monitor STATUS and ERROR logs
+- Use trace IDs for issue investigation
+
+#### Development Environments
+- Set `ENABLE_DETAILED_LOGS=true`
+- Review detailed logs for optimization
+- Analyze payload structures and processing steps
+
+#### Performance Monitoring
+- STATUS logs include timing information
+- Track ingestion and retrieval durations
+- Monitor batch processing efficiency
 
 ## 📁 Project Structure
 

@@ -1,6 +1,7 @@
 import { UserStoryVectorStore } from "../lib/vectorstore/userStoryVectorStore.js";
 import { createChatModel } from "../lib/models/index.js";
 import { config } from "../config/index.js";
+import { logger } from "../utils/logger.js";
 import { Document } from "@langchain/core/documents";
 import { 
   UserStorySearchResult, 
@@ -57,31 +58,47 @@ export class UserStoryRetrievalService {
     relevantStoriesLimit: number = 5, 
     traceId: string
   ): Promise<UserStoryRetrievalResponse> {
-    console.log(`[${traceId}] 🔍 Starting user story retrieval...`);
-    console.log(`[${traceId}] User Input: "${userInput}"`);
-    console.log(`[${traceId}] Relevant Stories Limit: ${relevantStoriesLimit}`);
+    // Overview logging: Start retrieval process and show main steps
+    logger.status(traceId, "=== USER STORY RETRIEVAL PROCESS STARTED ===", "🚀");
+    logger.status(traceId, `Step 1: User input received: "${userInput}"`, "📝");
+    logger.status(traceId, `Step 2: Relevant stories limit set to: ${relevantStoriesLimit}`, "🎯");
+    
+    // Detailed logging: Show all steps
+    logger.detailed(traceId, "=== USER STORY RETRIEVAL PROCESS STARTED ===", "🚀");
+    logger.detailed(traceId, `Step 1: User input received: "${userInput}"`, "📝");
+    logger.detailed(traceId, `Step 2: Relevant stories limit set to: ${relevantStoriesLimit}`, "🎯");
 
     const startTime = Date.now();
 
     try {
-      // Step 1: Perform vector search
-      console.log(`[${traceId}] 📊 Performing vector search...`);
+      // Step 3: Perform vector search (with potential re-ranking)
+      logger.status(traceId, "Step 3: Converting input to embeddings and performing vector search", "🔍");
+      logger.detailed(traceId, "Step 3: Starting vector search process", "🔍");
       const searchResults = await this.performVectorSearch(userInput, relevantStoriesLimit, traceId);
-      console.log(`[${traceId}] Found ${searchResults.length} relevant user stories`);
+      logger.detailed(traceId, `Vector search completed - found ${searchResults.length} relevant stories`);
 
-      // Step 2: Format search results for prompt
+      // Step 5: Format search results for prompt
+      logger.status(traceId, "Step 5: Formatting search results for LLM prompt", "📋");
+      logger.detailed(traceId, "Step 5: Formatting search results for LLM prompt", "📋");
       const vectorDbJson = this.formatSearchResultsForPrompt(searchResults);
+      logger.detailed(traceId, `Formatted ${searchResults.length} stories for prompt context`);
 
-      // Step 3: Generate standardized user story using LLM
-      console.log(`[${traceId}] 🤖 Generating standardized user story...`);
+      // Step 6: Generate standardized user story using LLM
+      logger.status(traceId, "Step 6: Generating standardized user story with LLM", "🤖");
+      logger.detailed(traceId, "Step 6: Generating standardized user story with LLM", "🤖");
       const llmResponse = await this.generateStandardizedUserStory(
         userInput, 
         vectorDbJson, 
         traceId
       );
+      logger.detailed(traceId, "LLM response received and processed");
 
-      // Step 4: Parse LLM response to extract standardized user story and score
+      // Step 7: Parse LLM response to extract standardized user story and score
+      logger.status(traceId, "Step 7: Parsing LLM response and extracting user story fields", "🔧");
+      logger.detailed(traceId, "Step 7: Parsing LLM response and extracting fields", "🔧");
       const { createdUserStory, score } = this.parseLLMResponse(llmResponse, searchResults);
+      logger.detailed(traceId, `Generated user story ID: ${createdUserStory.storyId}`);
+      logger.detailed(traceId, `Quality score: ${score}/100`);
 
       const duration = Date.now() - startTime;
 
@@ -99,11 +116,13 @@ export class UserStoryRetrievalService {
         }
       };
 
-      console.log(`[${traceId}] ✅ Retrieval completed in ${duration}ms`);
+      // Overview logging: Completion
+      logger.status(traceId, `Retrieval completed in ${duration}ms`, "✅");
+      logger.detailed(traceId, `=== USER STORY RETRIEVAL COMPLETED === (${duration}ms)`, "✅");
       return response;
 
     } catch (error) {
-      console.error(`[${traceId}] ❌ Error during retrieval:`, error);
+      logger.error(traceId, "User story retrieval failed", error, "❌");
       throw error;
     }
   }
@@ -121,10 +140,60 @@ export class UserStoryRetrievalService {
     }
 
     try {
-      // Use the vector store's searchUserStories method
-      const documents: Document[] = await this.vectorStore.searchUserStories(query, relevantStoriesLimit);
+      // Determine initial search count based on re-ranking configuration
+      const initialSearchCount = config.llmReranking.enabled 
+        ? config.llmReranking.retrievalTopK 
+        : relevantStoriesLimit;
+
+      logger.detailed(traceId, `LLM Re-ranking: ${config.llmReranking.enabled ? 'ENABLED' : 'DISABLED'}`, "🔧");
+      logger.detailed(traceId, `Initial vector search count: ${initialSearchCount}`);
+      logger.detailed(traceId, `Final results needed: ${relevantStoriesLimit}`);
+
+      // Step 3.1: Initial vector search
+      logger.detailed(traceId, "Executing vector similarity search", "🎯");
+      const initialDocuments: Document[] = await this.vectorStore.searchUserStories(query, initialSearchCount);
       
-      return documents.map((doc: Document, index: number) => ({
+      logger.detailed(traceId, `Vector search returned ${initialDocuments.length} initial results`);
+      
+      // Log initial results summary
+      if (initialDocuments.length > 0) {
+        logger.detailed(traceId, "Initial Results Summary:", "📋");
+        initialDocuments.slice(0, 5).forEach((doc, index) => {
+          const storyId = doc.metadata.storyId || `STORY-${index + 1}`;
+          const title = doc.metadata.title || doc.pageContent.substring(0, 50) + '...';
+          const score = doc.metadata.score || 0.8;
+          logger.detailed(traceId, `  ${index + 1}. ${storyId} - "${title}" (score: ${score.toFixed(3)})`);
+        });
+        if (initialDocuments.length > 5) {
+          logger.detailed(traceId, `  ... and ${initialDocuments.length - 5} more results`);
+        }
+      }
+
+      let finalDocuments = initialDocuments;
+
+      // Step 4: Apply LLM re-ranking if enabled
+      if (config.llmReranking.enabled && initialDocuments.length > relevantStoriesLimit) {
+        logger.status(traceId, "Step 4: Applying LLM re-ranking to improve relevance", "🤖");
+        logger.detailed(traceId, "Step 4: Starting LLM re-ranking process", "🤖");
+        finalDocuments = await this.performLLMReranking(query, initialDocuments, relevantStoriesLimit, traceId);
+        
+        logger.detailed(traceId, `LLM re-ranking completed. Final count: ${finalDocuments.length}`);
+        
+        // Log final results after re-ranking
+        logger.detailed(traceId, "Final Re-ranked Results:", "🎯");
+        finalDocuments.forEach((doc, index) => {
+          const storyId = doc.metadata.storyId || `STORY-${index + 1}`;
+          const title = doc.metadata.title || doc.pageContent.substring(0, 50) + '...';
+          const score = doc.metadata.score || 0.8;
+          logger.detailed(traceId, `  ${index + 1}. ${storyId} - "${title}" (score: ${score.toFixed(3)})`);
+        });
+      } else if (config.llmReranking.enabled) {
+        logger.detailed(traceId, `LLM re-ranking skipped: initial results (${initialDocuments.length}) <= target count (${relevantStoriesLimit})`, "⏭️");
+      }
+
+      // Convert to UserStorySearchResult format
+      logger.detailed(traceId, "Converting documents to search result format", "🔄");
+      const searchResults = finalDocuments.map((doc: Document, index: number) => ({
         storyId: doc.metadata.storyId || `STORY-${index + 1}`,
         title: doc.metadata.title || doc.pageContent.substring(0, 100),
         description: doc.metadata.description || doc.pageContent,
@@ -134,10 +203,97 @@ export class UserStoryRetrievalService {
         fileName: doc.metadata.fileName || "unknown",
         score: doc.metadata.score || 0.8 // Default score if not provided
       }));
+
+      logger.detailed(traceId, `Successfully converted ${searchResults.length} documents`);
+      return searchResults;
+
     } catch (error) {
-      console.error(`[${traceId}] Error in vector search:`, error);
+      logger.error(traceId, "Vector search failed", error, "❌");
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(`Vector search failed: ${errorMessage}`);
+    }
+  }
+
+  /**
+   * Perform LLM-based re-ranking of search results
+   */
+  private async performLLMReranking(
+    query: string,
+    documents: Document[],
+    targetCount: number,
+    traceId: string
+  ): Promise<Document[]> {
+    logger.detailed(traceId, `Re-ranking ${documents.length} documents to select top ${targetCount}`, "🔄");
+
+    try {
+      // Create re-ranking prompt
+      logger.detailed(traceId, "Preparing re-ranking prompt for LLM");
+      const documentsText = documents.map((doc, index) => {
+        const storyId = doc.metadata.storyId || `DOC-${index + 1}`;
+        const title = doc.metadata.title || 'No title';
+        const content = doc.pageContent.substring(0, 200);
+        return `${index + 1}. [${storyId}] ${title}\n   Content: ${content}...`;
+      }).join('\n\n');
+
+      const rerankingPrompt = `
+You are an expert at ranking user stories based on relevance to a given query.
+
+Query: "${query}"
+
+Here are ${documents.length} user stories ranked by vector similarity. Please re-rank them based on true semantic relevance, business value, and contextual similarity to the query.
+
+Documents:
+${documentsText}
+
+Instructions:
+1. Analyze each user story's relevance to the query
+2. Consider semantic meaning, not just keyword matching
+3. Prioritize stories that would provide the best context for generating a similar user story
+4. Return ONLY the document numbers (1-${documents.length}) in order of relevance, separated by commas
+5. Return exactly ${targetCount} document numbers
+
+Example response: 3,1,7,5,2
+
+Your response (top ${targetCount} document numbers):`;
+
+      logger.detailed(traceId, "Sending re-ranking request to LLM", "📤");
+      const response = await this.chatModel.invoke([
+        { role: "user", content: rerankingPrompt }
+      ]);
+
+      // Parse LLM response to get document indices
+      const rankingText = response.content.trim();
+      logger.detailed(traceId, `LLM re-ranking response: "${rankingText}"`, "📥");
+
+      const indices = rankingText
+        .split(',')
+        .map((s: string) => parseInt(s.trim()) - 1) // Convert to 0-based index
+        .filter((i: number) => i >= 0 && i < documents.length) // Validate indices
+        .slice(0, targetCount); // Ensure we don't exceed target count
+
+      logger.detailed(traceId, `Parsed indices: [${indices.join(', ')}]`);
+
+      if (indices.length < targetCount) {
+        logger.warn(traceId, `LLM returned ${indices.length} indices, filling remaining with original order`);
+        // Fill remaining slots with documents not already selected
+        const usedIndices = new Set(indices);
+        for (let i = 0; i < documents.length && indices.length < targetCount; i++) {
+          if (!usedIndices.has(i)) {
+            indices.push(i);
+          }
+        }
+      }
+
+      // Return re-ranked documents
+      const rerankedDocs = indices.map((i: number) => documents[i]).filter(Boolean);
+      logger.detailed(traceId, `Re-ranking successful: ${rerankedDocs.length} documents selected`);
+      
+      return rerankedDocs;
+
+    } catch (error) {
+      logger.error(traceId, "LLM re-ranking failed", error, "❌");
+      logger.detailed(traceId, "Falling back to original vector ranking", "🔄");
+      return documents.slice(0, targetCount);
     }
   }
 
@@ -186,7 +342,7 @@ Expected Result:
    - risk (analyze similar stories to determine appropriate risk level: Low/Medium/High)
    - createdDate
    - lastModifiedDate
-2. Include 3 relevant existing user stories from the vector DB in the same format. **Do not modify their storyId, summary, or other fields.**
+2. Include relevant existing user stories from the vector DB in the same format. **Do not modify their storyId, summary, or other fields.**
 3. Provide a score (0–100) for the created user story based on business value, completeness, and adherence to the standard format.
 4. Ensure output is readable, properly structured, and suitable for ingestion into MongoDB or CSV.
 

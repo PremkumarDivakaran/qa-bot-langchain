@@ -1,95 +1,112 @@
 class QABotClient {
     constructor() {
-        this.apiBaseUrl = 'http://localhost:8787';
-        this.currentTab = 'ingestion';
-        this.initializeElements();
-        this.setupEventListeners();
-        this.checkServerStatus();
-        this.progressTimer = null;
-        this.startTime = null;
+        try {
+            console.log('Initializing QA Bot Client...');
+            this.apiBaseUrl = 'http://localhost:8787';
+            this.currentTab = 'ingestion';
+            this.initializeElements();
+            this.setupEventListeners();
+            this.checkServerStatus();
+            this.progressTimer = null;
+            this.startTime = null;
+            console.log('QA Bot Client initialized successfully');
+        } catch (error) {
+            console.error('Error initializing QA Bot Client:', error);
+            this.showInitializationError(error);
+        }
     }
 
     initializeElements() {
-        // Tab elements
-        this.tabButtons = document.querySelectorAll('.tab-btn');
-        this.tabPanels = document.querySelectorAll('.tab-panel');
+        try {
+            console.log('Initializing DOM elements...');
+            // Tab elements
+            this.tabButtons = document.querySelectorAll('.tab-btn');
+            this.tabPanels = document.querySelectorAll('.tab-panel');
 
-        // Status elements
-        this.statusCard = document.getElementById('statusCard');
-        this.statusIcon = document.getElementById('statusIcon');
-        this.statusTitle = document.getElementById('statusTitle');
-        this.statusMessage = document.getElementById('statusMessage');
+            // Status elements
+            this.statusCard = document.getElementById('statusCard');
+            this.statusIcon = document.getElementById('statusIcon');
+            this.statusTitle = document.getElementById('statusTitle');
+            this.statusMessage = document.getElementById('statusMessage');
 
-        // Upload form elements
-        this.uploadForm = document.getElementById('uploadForm');
-        this.fileInput = document.getElementById('fileInput');
-        this.dropZone = document.getElementById('dropZone');
-        this.filePreview = document.getElementById('filePreview');
-        this.fileName = document.getElementById('fileName');
-        this.fileSize = document.getElementById('fileSize');
-        this.removeFileBtn = document.getElementById('removeFile');
-        this.clearExistingCheckbox = document.getElementById('clearExisting');
-        this.uploadBtn = document.getElementById('uploadBtn');
+            // Upload form elements
+            this.uploadForm = document.getElementById('uploadForm');
+            this.fileInput = document.getElementById('fileInput');
+            this.dropZone = document.getElementById('dropZone');
+            this.filePreview = document.getElementById('filePreview');
+            this.fileName = document.getElementById('fileName');
+            this.fileSize = document.getElementById('fileSize');
+            this.removeFileBtn = document.getElementById('removeFile');
+            this.clearExistingCheckbox = document.getElementById('clearExisting');
+            this.uploadBtn = document.getElementById('uploadBtn');
 
-        // Progress elements
-        this.progressSection = document.getElementById('progressSection');
-        this.progressFill = document.getElementById('progressFill');
-        this.progressStatus = document.getElementById('progressStatus');
-        this.progressTime = document.getElementById('progressTime');
+            // Progress elements
+            this.progressSection = document.getElementById('progressSection');
+            this.progressFill = document.getElementById('progressFill');
+            this.progressStatus = document.getElementById('progressStatus');
+            this.progressTime = document.getElementById('progressTime');
 
-        // Results elements
-        this.resultsSection = document.getElementById('resultsSection');
-        this.resultIcon = document.getElementById('resultIcon');
-        this.resultTitle = document.getElementById('resultTitle');
-        this.resultsContent = document.getElementById('resultsContent');
-        this.uploadAnotherBtn = document.getElementById('uploadAnotherBtn');
-        this.viewDataBtn = document.getElementById('viewDataBtn');
+            // Results elements
+            this.resultsSection = document.getElementById('resultsSection');
+            this.resultIcon = document.getElementById('resultIcon');
+            this.resultTitle = document.getElementById('resultTitle');
+            this.resultsContent = document.getElementById('resultsContent');
+            this.uploadAnotherBtn = document.getElementById('uploadAnotherBtn');
+            this.viewDataBtn = document.getElementById('viewDataBtn');
 
-        // Retrieval elements
-        this.retrievalForm = document.getElementById('retrievalForm');
-        this.userStoryInput = document.getElementById('userStoryInput');
-        this.relevantStoriesLimit = document.getElementById('relevantStoriesLimit');
-        this.retrieveBtn = document.getElementById('retrieveBtn');
+            // Retrieval elements
+            this.retrievalForm = document.getElementById('retrievalForm');
+            this.userStoryInput = document.getElementById('userStoryInput');
+            this.relevantStoriesLimit = document.getElementById('relevantStoriesLimit');
+            this.retrieveBtn = document.getElementById('retrieveBtn');
 
-        // Retrieval progress elements
-        this.retrievalProgressSection = document.getElementById('retrievalProgressSection');
-        this.retrievalProgressFill = document.getElementById('retrievalProgressFill');
-        this.retrievalProgressStatus = document.getElementById('retrievalProgressStatus');
-        this.retrievalProgressTime = document.getElementById('retrievalProgressTime');
+            // Retrieval progress elements
+            this.retrievalProgressSection = document.getElementById('retrievalProgressSection');
+            this.retrievalProgressFill = document.getElementById('retrievalProgressFill');
+            this.retrievalProgressStatus = document.getElementById('retrievalProgressStatus');
+            this.retrievalProgressTime = document.getElementById('retrievalProgressTime');
 
-        // Retrieval results elements
-        this.retrievalResultsSection = document.getElementById('retrievalResultsSection');
-        this.qualityScore = document.getElementById('qualityScore');
-        this.scoreValue = document.getElementById('scoreValue');
-        this.storyContent = document.getElementById('storyContent');
-        this.resultCount = document.getElementById('resultCount');
-        this.storiesTableBody = document.getElementById('storiesTableBody');
-        this.generateAnotherBtn = document.getElementById('generateAnotherBtn');
-        this.exportStoryBtn = document.getElementById('exportStoryBtn');
+            // Retrieval results elements
+            this.retrievalResultsSection = document.getElementById('retrievalResultsSection');
+            this.qualityScore = document.getElementById('qualityScore');
+            this.scoreValue = document.getElementById('scoreValue');
+            this.storyContent = document.getElementById('storyContent');
+            this.resultCount = document.getElementById('resultCount');
+            this.storiesTableBody = document.getElementById('storiesTableBody');
+            this.generateAnotherBtn = document.getElementById('generateAnotherBtn');
+            this.exportStoryBtn = document.getElementById('exportStoryBtn');
 
-        // Loading overlay
-        this.loadingOverlay = document.getElementById('loadingOverlay');
+            // Loading overlay
+            this.loadingOverlay = document.getElementById('loadingOverlay');
+            
+            console.log('DOM elements initialized successfully');
+        } catch (error) {
+            console.error('Error initializing DOM elements:', error);
+            throw error;
+        }
     }
 
     setupEventListeners() {
-        // Tab switching
-        this.tabButtons.forEach(button => {
-            button.addEventListener('click', (e) => this.switchTab(e.target.closest('.tab-btn').dataset.tab));
-        });
+        try {
+            console.log('Setting up event listeners...');
+            // Tab switching
+            this.tabButtons.forEach(button => {
+                button.addEventListener('click', (e) => this.switchTab(e.target.closest('.tab-btn').dataset.tab));
+            });
 
-        // Retrieval form
-        if (this.retrievalForm) {
-            this.retrievalForm.addEventListener('submit', (e) => this.handleRetrievalSubmit(e));
-        }
+            // Retrieval form
+            if (this.retrievalForm) {
+                this.retrievalForm.addEventListener('submit', (e) => this.handleRetrievalSubmit(e));
+            }
 
-        // Retrieval action buttons
-        if (this.generateAnotherBtn) {
-            this.generateAnotherBtn.addEventListener('click', () => this.resetRetrievalForm());
-        }
-        
-        if (this.exportStoryBtn) {
-            this.exportStoryBtn.addEventListener('click', () => this.exportGeneratedStory());
-        }
+            // Retrieval action buttons
+            if (this.generateAnotherBtn) {
+                this.generateAnotherBtn.addEventListener('click', () => this.resetRetrievalForm());
+            }
+            
+            if (this.exportStoryBtn) {
+                this.exportStoryBtn.addEventListener('click', () => this.exportGeneratedStory());
+            }
 
         // File input and drop zone
         this.fileInput.addEventListener('change', (e) => this.handleFileSelect(e));
@@ -116,14 +133,20 @@ class QABotClient {
         this.uploadAnotherBtn.addEventListener('click', () => this.resetForm());
         this.viewDataBtn.addEventListener('click', () => this.viewProcessedData());
 
-        // Browse link - separate handler to prevent conflicts
-        const browseLink = document.querySelector('.browse-link');
-        if (browseLink) {
-            browseLink.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                this.fileInput.click();
-            });
+            // Browse link - separate handler to prevent conflicts
+            const browseLink = document.querySelector('.browse-link');
+            if (browseLink) {
+                browseLink.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    this.fileInput.click();
+                });
+            }
+            
+            console.log('Event listeners set up successfully');
+        } catch (error) {
+            console.error('Error setting up event listeners:', error);
+            throw error;
         }
     }
 
@@ -367,10 +390,14 @@ class QABotClient {
     }
 
     resetForm() {
-        this.clearFileSelection();
-        this.clearExistingCheckbox.checked = false;
-        this.progressSection.style.display = 'none';
-        this.resultsSection.style.display = 'none';
+        try {
+            this.clearFileSelection();
+            if (this.clearExistingCheckbox) this.clearExistingCheckbox.checked = false;
+            if (this.progressSection) this.progressSection.style.display = 'none';
+            if (this.resultsSection) this.resultsSection.style.display = 'none';
+        } catch (error) {
+            console.error('Error resetting upload form:', error);
+        }
     }
 
     viewProcessedData() {
@@ -380,29 +407,38 @@ class QABotClient {
 
     // Tab Management
     switchTab(tabName) {
-        // Update active tab button
-        this.tabButtons.forEach(btn => {
-            btn.classList.remove('active');
-            if (btn.dataset.tab === tabName) {
-                btn.classList.add('active');
-            }
-        });
+        try {
+            // Update active tab button
+            this.tabButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.tab === tabName) {
+                    btn.classList.add('active');
+                }
+            });
 
-        // Update active tab panel
-        this.tabPanels.forEach(panel => {
-            panel.classList.remove('active');
-            if (panel.id === `${tabName}-panel`) {
-                panel.classList.add('active');
-            }
-        });
+            // Update active tab panel
+            this.tabPanels.forEach(panel => {
+                panel.classList.remove('active');
+                if (panel.id === `${tabName}-panel`) {
+                    panel.classList.add('active');
+                }
+            });
 
-        this.currentTab = tabName;
-        
-        // Reset forms when switching tabs
-        if (tabName === 'retrieval') {
-            this.resetRetrievalForm();
-        } else if (tabName === 'ingestion') {
-            this.resetUploadForm();
+            this.currentTab = tabName;
+            
+            // Reset forms when switching tabs with safety checks
+            if (tabName === 'retrieval') {
+                if (typeof this.resetRetrievalForm === 'function') {
+                    this.resetRetrievalForm();
+                }
+            } else if (tabName === 'ingestion') {
+                if (typeof this.resetForm === 'function') {
+                    this.resetForm();
+                }
+            }
+        } catch (error) {
+            console.error('Error switching tabs:', error);
+            // Don't show notification here as it might cause additional errors
         }
     }
 
@@ -479,12 +515,16 @@ class QABotClient {
     }
 
     hideRetrievalProgress() {
-        this.retrievalProgressSection.style.display = 'none';
-        this.retrieveBtn.disabled = false;
-        
-        if (this.progressTimer) {
-            clearInterval(this.progressTimer);
-            this.progressTimer = null;
+        try {
+            if (this.retrievalProgressSection) this.retrievalProgressSection.style.display = 'none';
+            if (this.retrieveBtn) this.retrieveBtn.disabled = false;
+            
+            if (this.progressTimer) {
+                clearInterval(this.progressTimer);
+                this.progressTimer = null;
+            }
+        } catch (error) {
+            console.error('Error hiding retrieval progress:', error);
         }
     }
 
@@ -591,11 +631,15 @@ class QABotClient {
     }
 
     resetRetrievalForm() {
-        this.userStoryInput.value = '';
-        this.relevantStoriesLimit.value = '5';
-        this.retrievalResultsSection.style.display = 'none';
-        this.hideRetrievalProgress();
-        this.lastRetrievalResult = null;
+        try {
+            if (this.userStoryInput) this.userStoryInput.value = '';
+            if (this.relevantStoriesLimit) this.relevantStoriesLimit.value = '5';
+            if (this.retrievalResultsSection) this.retrievalResultsSection.style.display = 'none';
+            this.hideRetrievalProgress();
+            this.lastRetrievalResult = null;
+        } catch (error) {
+            console.error('Error resetting retrieval form:', error);
+        }
     }
 
     exportGeneratedStory() {
@@ -661,6 +705,33 @@ class QABotClient {
         }, 5000);
     }
 
+    showInitializationError(error) {
+        // Create a simple error display if DOM elements aren't available
+        const errorDiv = document.createElement('div');
+        errorDiv.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #ef4444;
+                color: white;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 9999;
+                max-width: 500px;
+                text-align: center;
+            ">
+                <h2 style="margin: 0 0 1rem 0;">Initialization Error</h2>
+                <p style="margin: 0 0 1rem 0;">Failed to initialize the application:</p>
+                <pre style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 4px; margin: 1rem 0; font-size: 12px; white-space: pre-wrap;">${error.message}</pre>
+                <p style="margin: 0; font-size: 14px;">Please refresh the page or check the console for details.</p>
+            </div>
+        `;
+        document.body.appendChild(errorDiv);
+    }
+
     showLoading(show = true) {
         this.loadingOverlay.style.display = show ? 'flex' : 'none';
     }
@@ -668,7 +739,37 @@ class QABotClient {
 
 // Initialize the application when the DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
-    window.qaBotClient = new QABotClient();
+    console.log('DOM Content Loaded - Starting QA Bot Client initialization...');
+    try {
+        window.qaBotClient = new QABotClient();
+        console.log('QA Bot Client instance created successfully');
+    } catch (error) {
+        console.error('Failed to create QA Bot Client instance:', error);
+        // Create error display manually since client may not be available
+        const errorDiv = document.createElement('div');
+        errorDiv.innerHTML = `
+            <div style="
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: #ef4444;
+                color: white;
+                padding: 2rem;
+                border-radius: 8px;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                z-index: 9999;
+                max-width: 500px;
+                text-align: center;
+            ">
+                <h2 style="margin: 0 0 1rem 0;">Application Error</h2>
+                <p style="margin: 0 0 1rem 0;">Failed to initialize the QA Bot application:</p>
+                <pre style="background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 4px; margin: 1rem 0; font-size: 12px; white-space: pre-wrap;">${error.message}</pre>
+                <p style="margin: 0; font-size: 14px;">Please refresh the page or check the console for details.</p>
+            </div>
+        `;
+        document.body.appendChild(errorDiv);
+    }
 });
 
 // Global error handler

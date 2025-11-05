@@ -2,6 +2,7 @@ import { BaseChatModel } from "@langchain/core/language_models/chat_models";
 import { BaseMessage, AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { ChatGeneration, ChatResult } from "@langchain/core/outputs";
 import { CallbackManagerForLLMRun } from "@langchain/core/callbacks/manager";
+import { logger } from "../../utils/logger.js";
 
 export interface TestleafChatConfig {
   apiKey: string;
@@ -68,8 +69,8 @@ export class ChatTestleaf extends BaseChatModel {
     const convertedMessages = this.convertMessages(messages);
     
     // Log request for debugging
-    console.log('Sending request to Testleaf API...');
-    console.log('Messages:', convertedMessages);
+    logger.detailed('testleaf-api', 'Sending request to Testleaf API...');
+    logger.detailed('testleaf-api', `Messages: ${JSON.stringify(convertedMessages)}`);
 
     try {
       const response = await fetch(this.baseUrl, {
@@ -88,12 +89,12 @@ export class ChatTestleaf extends BaseChatModel {
 
       if (!response.ok) {
         const errorData = await response.text();
-        console.error('Testleaf API Error:', response.status, errorData);
+        logger.error('testleaf-api', `Testleaf API Error: ${response.status} - ${errorData}`);
         throw new Error(`Testleaf API call failed: ${response.status} - ${errorData}`);
       }
 
       const data = await response.json();
-      console.log('Testleaf API response:', data);
+      logger.detailed('testleaf-api', `Testleaf API response: ${JSON.stringify(data)}`);
 
       // Extract response from Testleaf's nested structure
       const messageContent = data.transaction?.response?.choices?.[0]?.message?.content || "";
@@ -119,7 +120,7 @@ export class ChatTestleaf extends BaseChatModel {
         llmOutput
       };
     } catch (error) {
-      console.error('Error calling Testleaf API:', error);
+      logger.error('testleaf-api', `Error calling Testleaf API: ${error}`);
       throw error;
     }
   }
