@@ -541,7 +541,18 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
     if (!userInput) {
       return 20;
     }
-    const checks = {
+
+    // Check if input contains structured user story fields (like a complete user story)
+    const inputStructureChecks = {
+      hasExplicitSummary: /summary[:\s]*[^\\n]+/i.test(userInput),
+      hasExplicitDescription: /description[:\s]*[^\\n]+/i.test(userInput),
+      hasExplicitAcceptanceCriteria: /(acceptance\s*criteria|given.*when.*then)/i.test(userInput),
+      hasExplicitPriority: /(priority[:\s]*[^\\n]+|p[1-4]|critical|high|medium|low)/i.test(userInput),
+      hasExplicitRisk: /(risk\s*level?[:\s]*[^\\n]+|risk[:\s]*(low|medium|high|critical))/i.test(userInput),
+      hasExplicitProject: /(project[:\s]*[^\\n]+|story\s*id[:\s]*[^\\n]+)/i.test(userInput)
+    };
+
+    const basicChecks = {
       // Basic structure and length
       hasMinLength: userInput.length >= 10,
       hasReasonableLength: userInput.length >= 20,
@@ -560,40 +571,72 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
       hasDomainRelevance: vectorDbResults && vectorDbResults.length > 0,
       hasBusinessValue: /\b(manage|create|view|update|delete|process|handle|track|monitor|report)\b/i.test(userInput)
     };
+
+    // Domain matching analysis
+    const domainAnalysis = this.analyzeDomainRelevance(userInput, vectorDbResults);
     
-    // Score calculation
-    if (!checks.hasValidWords || !checks.hasVowels) {
+    // Score calculation - First check for completely invalid input
+    if (!basicChecks.hasValidWords || !basicChecks.hasVowels) {
       return 10; // Very poor input like "adadf"
     }
     
-    if (!checks.hasMinLength || !checks.isNotGibberish) {
+    if (!basicChecks.hasMinLength || !basicChecks.isNotGibberish) {
       return 15; // Poor input - includes gibberish like "adadf"
     }
     
-    if (!checks.hasReasonableLength) {
+    // Check if input is a properly structured complete user story
+    const structureFieldsCount = Object.values(inputStructureChecks).filter(Boolean).length;
+    
+    if (structureFieldsCount >= 4) {
+      // Input contains 4+ structured fields - this is a complete user story
+      score += 30; // Bonus for well-structured input
+      logger.detailed('Input analysis', `Complete user story detected with ${structureFieldsCount}/6 structured fields`);
+    } else if (structureFieldsCount >= 2) {
+      // Input contains some structured fields
+      score += 15; // Moderate bonus
+      logger.detailed('Input analysis', `Partial user story structure detected with ${structureFieldsCount}/6 structured fields`);
+    } else if (structureFieldsCount === 0) {
+      // No structured fields found - penalize heavily if it's also not a basic user story
+      if (!basicChecks.hasUserStoryStructure && !basicChecks.hasWantStatement) {
+        score -= 25; // Heavy penalty for unstructured input
+        logger.detailed('Input analysis', 'No user story structure detected - applying heavy penalty');
+      }
+    }
+    
+    if (!basicChecks.hasReasonableLength) {
       score -= 20;
     }
     
-    // User story structure scoring
-    if (checks.hasUserStoryStructure) score += 20;
-    if (checks.hasWantStatement) score += 15;
-    if (checks.hasSoThatClause) score += 10;
+    // User story structure scoring (for basic "As a... I want... so that..." format)
+    if (basicChecks.hasUserStoryStructure) score += 20;
+    if (basicChecks.hasWantStatement) score += 15;
+    if (basicChecks.hasSoThatClause) score += 10;
     
     // Content quality scoring
-    if (checks.hasRepeatedChars) score -= 15;
-    if (checks.hasCommonWords) score += 10;
-    if (checks.hasBusinessValue) score += 15;
+    if (basicChecks.hasRepeatedChars) score -= 15;
+    if (basicChecks.hasCommonWords) score += 10;
+    if (basicChecks.hasBusinessValue) score += 15;
     
-    // Domain relevance
-    if (checks.hasDomainRelevance) score += 10;
+    // Domain relevance scoring
+    if (basicChecks.hasDomainRelevance) {
+      if (domainAnalysis.isRelevant) {
+        score += 15; // Bonus for domain match
+        logger.detailed('Domain analysis', `Domain match detected: ${domainAnalysis.inputDomain} matches ${domainAnalysis.contextDomain}`);
+      } else {
+        score -= 20; // Penalty for domain mismatch  
+        logger.detailed('Domain analysis', `Domain mismatch: ${domainAnalysis.inputDomain} vs ${domainAnalysis.contextDomain} - applying penalty`);
+      }
+    } else {
+      score += 5; // Small bonus if no vector results (no context to mismatch)
+    }
     
     // CRITICAL: LLM response quality - these are REQUIRED fields, not optional bonuses
     const hasValidSummary = this.extractField(llmResponse, 'summary') !== null;
     const hasValidDescription = this.extractField(llmResponse, 'description') !== null;
     const hasValidCriteria = this.extractField(llmResponse, 'acceptanceCriteria') !== null;
-    const hasValidProject = this.extractField(llmResponse, 'project') !== null;
+    const hasValidProject = this.extractField(llmResponse, 'projectName') !== null;
     const hasValidPriority = this.extractField(llmResponse, 'priority') !== null;
-    const hasValidRiskLevel = this.extractField(llmResponse, 'riskLevel') !== null;
+    const hasValidRiskLevel = this.extractField(llmResponse, 'risk') !== null;
     
     // Count missing required fields
     const requiredFields = [hasValidSummary, hasValidDescription, hasValidCriteria, hasValidProject, hasValidPriority, hasValidRiskLevel];
@@ -613,8 +656,127 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
       score += 20; // Bonus for having all required fields
     }
     
-    logger.detailed('Quality scoring breakdown', `missing ${missingFieldsCount}/6 required fields, final score: ${Math.max(5, Math.min(100, score))}`);
+    // Use already calculated structure completeness for logging
+    const hasBasicStructure = basicChecks.hasUserStoryStructure && basicChecks.hasWantStatement;
+    
+    logger.detailed('Quality scoring breakdown', 
+      `Input structure: ${structureFieldsCount}/6 explicit fields, ` +
+      `basic user story format: ${hasBasicStructure ? 'YES' : 'NO'}, ` +
+      `domain relevance: ${domainAnalysis.isRelevant ? 'MATCH' : 'MISMATCH'} (${domainAnalysis.inputDomain} vs ${domainAnalysis.contextDomain}), ` +
+      `missing LLM fields: ${missingFieldsCount}/6, ` +
+      `final score: ${Math.max(5, Math.min(100, score))}`
+    );
     
     return Math.max(5, Math.min(100, score)); // Ensure score is between 5-100
+  }
+
+  /**
+   * Analyze domain relevance between user input and retrieved context
+   */
+  private analyzeDomainRelevance(
+    userInput: string, 
+    vectorDbResults?: UserStorySearchResult[]
+  ): {
+    isRelevant: boolean;
+    inputDomain: string;
+    contextDomain: string;
+    confidence: number;
+  } {
+    // If no vector results, assume relevance (no context to mismatch with)
+    if (!vectorDbResults || vectorDbResults.length === 0) {
+      return {
+        isRelevant: true,
+        inputDomain: 'unknown',
+        contextDomain: 'none',
+        confidence: 0.5
+      };
+    }
+
+    // Define domain keywords for detection
+    const domainKeywords = {
+      healthcare: [
+        'patient', 'doctor', 'nurse', 'medical', 'health', 'hospital', 'clinic', 'treatment',
+        'diagnosis', 'medication', 'prescription', 'therapy', 'surgery', 'ward', 'emergency',
+        'radiology', 'laboratory', 'blood', 'appointment', 'consultation', 'billing',
+        'discharge', 'admission', 'pharmacy', 'dietician', 'physiotherapy'
+      ],
+      retail: [
+        'customer', 'product', 'purchase', 'shopping', 'store', 'inventory', 'sales',
+        'cart', 'checkout', 'payment', 'order', 'delivery', 'shipping', 'warehouse',
+        'catalog', 'discount', 'promotion', 'refund', 'return', 'merchandise'
+      ],
+      finance: [
+        'account', 'transaction', 'payment', 'bank', 'loan', 'credit', 'debit', 'investment',
+        'portfolio', 'trading', 'mortgage', 'insurance', 'budget', 'financial', 'money',
+        'currency', 'interest', 'balance', 'deposit', 'withdrawal'
+      ],
+      education: [
+        'student', 'teacher', 'course', 'class', 'grade', 'assignment', 'exam', 'curriculum',
+        'school', 'university', 'enrollment', 'academic', 'learning', 'education',
+        'instructor', 'syllabus', 'semester', 'tuition', 'scholarship'
+      ],
+      logistics: [
+        'shipping', 'delivery', 'transport', 'warehouse', 'inventory', 'supply', 'logistics',
+        'freight', 'cargo', 'tracking', 'distribution', 'fulfillment', 'supplier'
+      ]
+    };
+
+    // Detect input domain
+    const inputDomain = this.detectDomain(userInput, domainKeywords);
+    
+    // Detect context domain from vector results
+    const contextText = vectorDbResults
+      .map(result => `${result.title} ${result.description} ${result.fullContent}`)
+      .join(' ');
+    const contextDomain = this.detectDomain(contextText, domainKeywords);
+
+    // Calculate relevance
+    const isRelevant = inputDomain === contextDomain || 
+                      inputDomain === 'unknown' || 
+                      contextDomain === 'unknown';
+
+    // Calculate confidence based on keyword matches
+    const inputKeywords = domainKeywords[inputDomain as keyof typeof domainKeywords] || [];
+    const contextKeywords = domainKeywords[contextDomain as keyof typeof domainKeywords] || [];
+    const inputMatches = this.countDomainMatches(userInput, inputKeywords);
+    const contextMatches = this.countDomainMatches(contextText, contextKeywords);
+    const confidence = Math.min(1.0, (inputMatches + contextMatches) / 10);
+
+    return {
+      isRelevant,
+      inputDomain,
+      contextDomain,
+      confidence
+    };
+  }
+
+  /**
+   * Detect domain based on keyword matching
+   */
+  private detectDomain(text: string, domainKeywords: Record<string, string[]>): string {
+    const lowerText = text.toLowerCase();
+    let maxMatches = 0;
+    let detectedDomain = 'unknown';
+
+    for (const [domain, keywords] of Object.entries(domainKeywords)) {
+      const matches = this.countDomainMatches(lowerText, keywords);
+      if (matches > maxMatches) {
+        maxMatches = matches;
+        detectedDomain = domain;
+      }
+    }
+
+    // Require at least 2 keyword matches to confidently detect a domain
+    return maxMatches >= 2 ? detectedDomain : 'unknown';
+  }
+
+  /**
+   * Count domain keyword matches in text
+   */
+  private countDomainMatches(text: string, keywords: string[]): number {
+    const lowerText = text.toLowerCase();
+    return keywords.filter(keyword => 
+      lowerText.includes(keyword.toLowerCase())
+    ).length;
   }
 }
