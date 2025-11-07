@@ -893,13 +893,13 @@ body {
     transition: all 0.3s ease;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
 }
 
 .upload-btn:hover:not(:disabled) {
     transform: translateY(-3px);
-    box-shadow: 0 15px 35px rgba(139, 92, 246, 0.4);
-    background: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+    box-shadow: 0 15px 35px rgba(59, 130, 246, 0.4);
+    background: linear-gradient(135deg, #2563eb 0%, #0891b2 100%);
 }
 
 .upload-btn:active {
