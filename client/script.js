@@ -1,36 +1,98 @@
 // Global functions for support page
 function copyEmailAddress() {
     const email = 'premkumardivakaran10@gmail.com';
-    navigator.clipboard.writeText(email).then(() => {
-        // Show success feedback
-        const button = event.target.closest('.action-btn');
+    
+    // Find the button element (since event.target is not available)
+    const button = document.querySelector('button[onclick="copyEmailAddress()"]');
+    
+    // Check if clipboard API is available
+    if (navigator.clipboard && window.isSecureContext) {
+        // Modern clipboard API
+        navigator.clipboard.writeText(email).then(() => {
+            showCopySuccess(button);
+        }).catch(err => {
+            console.error('Clipboard API failed: ', err);
+            fallbackCopy(email, button);
+        });
+    } else {
+        // Fallback for older browsers or non-secure contexts
+        console.log('Clipboard API not available, using fallback method');
+        fallbackCopy(email, button);
+    }
+}
+
+function showCopySuccess(button) {
+    if (button) {
         const originalHtml = button.innerHTML;
+        const originalStyle = button.style.background;
+        
         button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        button.style.background = '#28a745';
+        button.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+        button.style.color = 'white';
         
         setTimeout(() => {
             button.innerHTML = originalHtml;
-            button.style.background = '';
+            button.style.background = originalStyle;
+            button.style.color = '#3b82f6';
         }, 2000);
-    }).catch(() => {
-        // Fallback for older browsers
+    }
+}
+
+function showCopyError(button, email) {
+    if (button) {
+        const originalHtml = button.innerHTML;
+        const originalStyle = button.style.background;
+        
+        button.innerHTML = '<i class="fas fa-times"></i> Failed';
+        button.style.background = 'linear-gradient(135deg, #ef4444, #dc2626)';
+        button.style.color = 'white';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHtml;
+            button.style.background = originalStyle;
+            button.style.color = '#3b82f6';
+        }, 3000);
+    }
+    
+    // Show user-friendly message
+    setTimeout(() => {
+        alert('Copy failed. Please manually copy this email address:\n\n' + email);
+    }, 100);
+}
+
+function fallbackCopy(email, button) {
+    try {
+        // Create a temporary textarea element
         const textArea = document.createElement('textarea');
         textArea.value = email;
+        
+        // Style to be invisible
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        textArea.style.top = '-999999px';
+        textArea.style.opacity = '0';
+        textArea.setAttribute('readonly', '');
+        
         document.body.appendChild(textArea);
+        
+        // Select and copy
+        textArea.focus();
         textArea.select();
-        document.execCommand('copy');
+        
+        const successful = document.execCommand('copy');
         document.body.removeChild(textArea);
         
-        const button = event.target.closest('.action-btn');
-        const originalHtml = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        button.style.background = '#28a745';
+        if (successful) {
+            console.log('Fallback copy successful');
+            showCopySuccess(button);
+        } else {
+            throw new Error('execCommand failed');
+        }
         
-        setTimeout(() => {
-            button.innerHTML = originalHtml;
-            button.style.background = '';
-        }, 2000);
-    });
+    } catch (fallbackErr) {
+        console.error('All copy methods failed: ', fallbackErr);
+        showCopyError(button, email);
+    }
 }
 
 // Function for copying to clipboard with feedback
