@@ -217,6 +217,9 @@ app.post("/retrieve/user-stories", async (req, res) => {
     logger.detailed(traceId, `Request validated`);
     logger.detailed(traceId, `User Input: "${parsed.userInput}"`);
     logger.detailed(traceId, `Relevant Stories Limit: ${parsed.relevantStoriesLimit}`);
+    logger.detailed(traceId, `Search Mode: ${parsed.searchMode}`);
+    logger.detailed(traceId, `Vector Weight: ${parsed.vectorWeight}%`);
+    logger.detailed(traceId, `BM25 Weight: ${parsed.bm25Weight}%`);
 
     // Check if retrieval service is initialized
     if (!retrievalService) {
@@ -227,7 +230,10 @@ app.post("/retrieve/user-stories", async (req, res) => {
     const result: UserStoryRetrievalResponse = await (retrievalService as UserStoryRetrievalService).retrieveUserStories(
       parsed.userInput,
       parsed.relevantStoriesLimit || 5,
-      traceId
+      traceId,
+      parsed.searchMode || "hybrid",
+      parsed.vectorWeight || 50,
+      parsed.bm25Weight || 50
     );
 
     const duration = Date.now() - startTime;

@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StoryBot Documentation</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .doc-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .doc-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .doc-title {
+            color: #1a365d;
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+        .doc-subtitle {
+            color: #6b7280;
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        .doc-section {
+            margin-bottom: 2.5rem;
+        }
+        .doc-section h2 {
+            color: #1a365d;
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .doc-section h3 {
+            color: #2b77ad;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem 0;
+        }
+        .doc-section h4 {
+            color: #1a365d;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem 0;
+        }
+        .doc-content {
+            line-height: 1.8;
+            color: #334155;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+        .feature-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #1a365d;
+            margin-bottom: 0.5rem;
+        }
+        .feature-desc {
+            color: #64748b;
+            line-height: 1.6;
+        }
+        .code-block {
+            background: #1e293b;
+            color: #e2e8f0;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+            overflow-x: auto;
+            font-family: 'Fira Code', 'Courier New', monospace;
+        }
+        .command {
+            background: #0f172a;
+            color: #22d3ee;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            display: inline-block;
+            margin: 0.25rem 0;
+        }
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #2b77ad;
+            text-decoration: none;
+            font-weight: 600;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: rgba(43, 119, 173, 0.1);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+        }
+        .back-link:hover {
+            background: rgba(43, 119, 173, 0.2);
+            transform: translateY(-1px);
+        }
+        ul, ol {
+            padding-left: 1.5rem;
+            margin: 1rem 0;
+        }
+        li {
+            margin-bottom: 0.5rem;
+        }
+        .highlight-box {
+            background: #ecfdf5;
+            border-left: 4px solid #10b981;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="doc-container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Back to StoryBot
+            </a>
+            
+            <div class="doc-header">
+                <h1 class="doc-title">StoryBot Documentation</h1>
+                <p class="doc-subtitle">Complete guide for using StoryBot with LangChain</p>
+            </div>
+
+            <div class="doc-section">
+                <h2>🚀 Overview</h2>
+                <div class="doc-content">
+                    <p>This StoryBot is a TypeScript-based application that leverages LangChain for document processing and question-answering capabilities. It features a modern web interface with document ingestion, user story retrieval, and intelligent QA functionality.</p>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>✨ Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🔄</div>
+                        <div class="feature-title">Document Ingestion</div>
+                        <div class="feature-desc">Upload and process PDF, DOCX, and TXT files with real-time progress tracking and comprehensive error handling.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🔍</div>
+                        <div class="feature-title">User Story Retrieval</div>
+                        <div class="feature-desc">Find relevant user stories using semantic search with AI-powered similarity scoring and automated quality assessment.</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💬</div>
+                        <div class="feature-title">QA Bot</div>
+                        <div class="feature-desc">Interactive chat with context-aware responses, source citations, and support for multiple AI models.</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🛠️ Getting Started</h2>
+                
+                <h3>Prerequisites</h3>
+                <div class="doc-content">
+                    <ul>
+                        <li>Node.js 18.17 or higher</li>
+                        <li>Python 3.x</li>
+                        <li>MongoDB (for vector storage)</li>
+                    </ul>
+                </div>
+
+                <h3>Installation</h3>
+                <div class="doc-content">
+                    <p><strong>1. Clone the repository</strong></p>
+                    <div class="code-block">git clone &lt;repository-url&gt;<br>cd qa-bot-langchain</div>
+                    
+                    <p><strong>2. Install dependencies</strong></p>
+                    <div class="code-block">npm install</div>
+                    
+                    <p><strong>3. Environment Setup</strong></p>
+                    <p>Create a <code>.env</code> file with the following variables:</p>
+                    <div class="code-block"># AI Model Configuration<br>OPENAI_API_KEY=your_openai_api_key<br>ANTHROPIC_API_KEY=your_anthropic_api_key<br>GROQ_API_KEY=your_groq_api_key<br><br># Database Configuration<br>MONGODB_URI=your_mongodb_connection_string<br><br># Application Settings<br>PORT=8000<br>NODE_ENV=development</div>
+                </div>
+
+                <h3>Running the Application</h3>
+                <div class="doc-content">
+                    <div class="highlight-box">
+                        <strong>Quick Start:</strong> Run both frontend and backend with a single command
+                    </div>
+                    <div class="command">npm run app</div>
+                    
+                    <p><strong>Start Services Individually:</strong></p>
+                    <div class="command">npm run backend  # Backend API Server (port 8000)</div>
+                    <div class="command">npm run frontend # Frontend UI Server (port 3000)</div>
+                    
+                    <p><strong>Development Mode:</strong></p>
+                    <div class="command">npm run dev  # Backend with hot reload</div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>📚 Usage Guide</h2>
+                
+                <h3>Document Ingestion</h3>
+                <div class="doc-content">
+                    <ol>
+                        <li><strong>Navigate to the Ingestion Tab</strong> - Click on "Document Ingestion" in the main interface</li>
+                        <li><strong>Upload Documents</strong> - Drag and drop files or click "Browse files" (Supports PDF, DOCX, TXT)</li>
+                        <li><strong>Configure Processing Options</strong>:
+                            <ul>
+                                <li><em>Split Documents</em>: Break large documents into chunks</li>
+                                <li><em>Generate Embeddings</em>: Create vector embeddings for semantic search</li>
+                                <li><em>Store Metadata</em>: Extract and store document metadata</li>
+                            </ul>
+                        </li>
+                        <li><strong>Monitor Progress</strong> - Real-time progress bar shows processing status with detailed logs</li>
+                    </ol>
+                </div>
+
+                <h3>User Story Retrieval</h3>
+                <div class="doc-content">
+                    <ol>
+                        <li><strong>Access the Retrieval Tab</strong> - Switch to "User Story Retrieval"</li>
+                        <li><strong>Enter Your Query</strong> - Use natural language (e.g., "user authentication with social media")</li>
+                        <li><strong>Configure Search Parameters</strong>:
+                            <ul>
+                                <li><em>Result Limit</em>: Number of stories to retrieve (1-20)</li>
+                                <li><em>Similarity Threshold</em>: Minimum relevance score</li>
+                            </ul>
+                        </li>
+                        <li><strong>Review Results</strong>:
+                            <ul>
+                                <li><em>Generated Story</em>: AI-created user story based on your query</li>
+                                <li><em>Quality Score</em>: Automated assessment of story quality</li>
+                                <li><em>Relevant Stories</em>: Existing stories ranked by similarity</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🔧 Configuration</h2>
+                
+                <h3>Available Scripts</h3>
+                <div class="doc-content">
+                    <ul>
+                        <li><span class="command">npm run app</span> - Start both frontend and backend</li>
+                        <li><span class="command">npm run backend</span> - Start backend API server</li>
+                        <li><span class="command">npm run frontend</span> - Start frontend UI server</li>
+                        <li><span class="command">npm run dev</span> - Development mode with hot reload</li>
+                        <li><span class="command">npm run build</span> - Build TypeScript to JavaScript</li>
+                        <li><span class="command">npm run status</span> - Check running services status</li>
+                    </ul>
+                </div>
+
+                <h3>Model Configuration</h3>
+                <div class="doc-content">
+                    <p>The application supports multiple AI providers with automatic fallback:</p>
+                    <ul>
+                        <li><strong>Primary:</strong> OpenAI (GPT-4, GPT-3.5-turbo)</li>
+                        <li><strong>Secondary:</strong> Anthropic (Claude-3, Claude-2)</li>
+                        <li><strong>Fallback:</strong> Groq (Llama, Mixtral)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🛠️ Troubleshooting</h2>
+                
+                <h3>Common Issues</h3>
+                <div class="doc-content">
+                    <div class="highlight-box">
+                        <strong>Documents Not Processing:</strong>
+                        <ul>
+                            <li>Check file format (PDF, DOCX, TXT supported)</li>
+                            <li>Verify file size limits (max 10MB)</li>
+                            <li>Ensure stable internet connection for AI model access</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>Search Not Returning Results:</strong>
+                        <ul>
+                            <li>Ensure vector index is created and populated</li>
+                            <li>Try more specific query terms</li>
+                            <li>Lower similarity threshold for broader results</li>
+                        </ul>
+                    </div>
+
+                    <div class="highlight-box">
+                        <strong>API Errors:</strong>
+                        <ul>
+                            <li>Verify AI provider API keys in environment</li>
+                            <li>Check API rate limits</li>
+                            <li>Ensure MongoDB is running and accessible</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h3>Debug Mode</h3>
+                <div class="doc-content">
+                    <p>Enable debug logging:</p>
+                    <div class="code-block">export NODE_ENV=development<br>export DEBUG=qa-bot:*<br>npm run dev</div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>📁 Project Structure</h2>
+                <div class="doc-content">
+                    <div class="code-block">qa-bot-langchain/<br>├── src/                  # TypeScript source code<br>│   ├── chain.ts         # LangChain configuration<br>│   ├── loaders.ts       # Document loaders<br>│   ├── model.ts         # AI model configurations<br>│   ├── server.ts        # Express server<br>│   └── pipelines/       # Processing pipelines<br>├── client/              # Frontend assets<br>│   ├── index.html       # Main UI<br>│   ├── styles.css       # Modern styling<br>│   └── script.js        # Frontend JavaScript<br>├── docs/                # Documentation<br>├── scripts/             # Utility scripts<br>└── package.json         # Dependencies and scripts</div>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2>🆘 Support</h2>
+                <div class="doc-content">
+                    <ul>
+                        <li><strong>GitHub Issues:</strong> Report bugs and feature requests</li>
+                        <li><strong>Documentation:</strong> Check this guide for common questions</li>
+                        <li><strong>Version:</strong> v0.4.0 - Enhanced UI with modern design</li>
+                    </ul>
+                    
+                    <div class="highlight-box">
+                        <strong>Need Help?</strong> Check the status of your services with <span class="command">npm run status</span> and review the console logs for detailed error information.
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0;">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to StoryBot
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

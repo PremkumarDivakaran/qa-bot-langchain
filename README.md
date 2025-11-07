@@ -199,12 +199,79 @@ Content-Type: multipart/form-data
 ```http
 POST /retrieve/user-stories
 Content-Type: application/json
+```
 
+#### Request Body Options
+
+**1. Hybrid Search (Default - Combines Vector + BM25):**
+```json
 {
   "userInput": "As a nurse, I want to manage patient registration",
-  "relevantStoriesLimit": 5
+  "relevantStoriesLimit": 5,
+  "searchMode": "hybrid",
+  "vectorWeight": 50,
+  "bm25Weight": 50
 }
 ```
+
+**2. Vector Search Only (Semantic Similarity):**
+```json
+{
+  "userInput": "As a nurse, I want to manage patient registration",
+  "relevantStoriesLimit": 5,
+  "searchMode": "vector",
+  "vectorWeight": 100,
+  "bm25Weight": 0
+}
+```
+
+**3. BM25 Search Only (Keyword-based):**
+```json
+{
+  "userInput": "As a nurse, I want to manage patient registration",
+  "relevantStoriesLimit": 5,
+  "searchMode": "bm25",
+  "vectorWeight": 0,
+  "bm25Weight": 100
+}
+```
+
+**4. Custom Weight Hybrid (Example: 70% Vector, 30% BM25):**
+```json
+{
+  "userInput": "As a nurse, I want to manage patient registration",
+  "relevantStoriesLimit": 7,
+  "searchMode": "hybrid", 
+  "vectorWeight": 70,
+  "bm25Weight": 30
+}
+```
+
+#### Request Parameters
+| Parameter | Type | Required | Default | Description |
+|-----------|------|----------|---------|-------------|
+| `userInput` | string | Yes | - | User story text to process |
+| `relevantStoriesLimit` | number | No | 5 | Number of similar stories to retrieve (3-10) |
+| `searchMode` | string | No | "hybrid" | Search algorithm: "vector", "bm25", or "hybrid" |
+| `vectorWeight` | number | No | 50 | Vector search weight percentage (0-100) |
+| `bm25Weight` | number | No | 50 | BM25 search weight percentage (0-100) |
+
+#### Search Modes Explained
+
+**🔍 Vector Search (`"vector"`):**
+- Uses semantic similarity with 1024-dimension embeddings
+- Best for: Finding conceptually similar stories
+- Example: "patient registration" matches "user enrollment", "member signup"
+
+**📝 BM25 Search (`"bm25"`):**
+- Uses keyword-based relevance scoring
+- Best for: Finding exact keyword matches
+- Example: "patient registration" matches stories containing those exact terms
+
+**⚡ Hybrid Search (`"hybrid"`):**
+- Combines both vector and BM25 search results
+- Weighted scoring: `finalScore = (vectorScore × vectorWeight/100) + (bm25Score × bm25Weight/100)`
+- Best for: Balanced semantic and keyword relevance
 
 **Response:**
 ```json
@@ -228,7 +295,14 @@ Content-Type: application/json
     }
   ],
   "score": 85,
-  "duration": 13537
+  "query": "As a nurse, I want to manage patient registration",
+  "resultCount": 5,
+  "duration": 13537,
+  "metadata": {
+    "traceId": "retrieve_1762323738614_kk5obo7jh",
+    "model": "testleaf",
+    "embedding": "mistral/mistral-embed"
+  }
 }
 ```
 

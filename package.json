@@ -1,8 +1,8 @@
 {
-  "name": "qa-bot-ts",
+  "name": "storybot-ts",
   "version": "0.1.0",
   "private": true,
-  "description": "Minimal TypeScript QA bot scaffold (server + chain + model stubs).",
+  "description": "StoryBot - AI-powered user story processing and document intelligence with LangChain.",
   "type": "module",
   "main": "dist/server.js",
   "engines": {

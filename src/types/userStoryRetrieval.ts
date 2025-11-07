@@ -5,7 +5,10 @@ import { z } from "zod";
  */
 export const UserStoryRetrievalRequestSchema = z.object({
   userInput: z.string().min(1, "User input cannot be empty"),
-  relevantStoriesLimit: z.number().int().positive().optional().default(5)
+  relevantStoriesLimit: z.number().int().positive().optional().default(5),
+  searchMode: z.enum(["vector", "bm25", "hybrid"]).optional().default("hybrid"),
+  vectorWeight: z.number().min(0).max(100).optional().default(50),
+  bm25Weight: z.number().min(0).max(100).optional().default(50)
 });
 
 export type UserStoryRetrievalRequest = z.infer<typeof UserStoryRetrievalRequestSchema>;

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QA Bot Support</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/                </a>
+            </div>
+        </div>esome/6.5.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #87ceeb, #b0e0e6);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            color: #1a365d;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 1.2rem;
+        }
+        
+        .support-icon {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #2b77ad, #5dade2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 30px;
+            box-shadow: 0 10px 30px rgba(43, 119, 173, 0.3);
+        }
+        
+        .support-icon i {
+            font-size: 3rem;
+            color: white;
+        }
+        
+        .email-section {
+            background: #f8fbff;
+            border: 2px solid #e3f2fd;
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .email-title {
+            font-size: 1.5rem;
+            color: #1a365d;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .email-address {
+            background: white;
+            border: 2px solid #5dade2;
+            border-radius: 10px;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            color: #1a365d;
+            font-weight: 600;
+            font-family: 'Courier New', monospace;
+            margin-bottom: 20px;
+            display: inline-block;
+            min-width: 300px;
+        }
+        
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #2b77ad;
+            color: white;
+            box-shadow: 0 4px 15px rgba(43, 119, 173, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: #1a365d;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(43, 119, 173, 0.4);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #2b77ad;
+            border: 2px solid #2b77ad;
+        }
+        
+        .btn-secondary:hover {
+            background: #2b77ad;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .help-section {
+            margin-top: 40px;
+        }
+        
+        .help-title {
+            font-size: 1.5rem;
+            color: #1a365d;
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .help-card {
+            background: white;
+            border: 2px solid #e1e8ed;
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .help-card:hover {
+            border-color: #5dade2;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .help-card i {
+            font-size: 2.5rem;
+            color: #5dade2;
+            margin-bottom: 15px;
+        }
+        
+        .help-card h3 {
+            color: #1a365d;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .help-card p {
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        
+        .back-link a {
+            color: #2b77ad;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #2b77ad;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link a:hover {
+            background: #2b77ad;
+            color: white;
+        }
+        
+        .response-info {
+            background: #e8f5e8;
+            border: 2px solid #4caf50;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            text-align: center;
+            color: #2e7d32;
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="support-icon">
+                <i class="fas fa-headset"></i>
+            </div>
+            <h1>QA Bot Support</h1>
+            <p>Need help? We're here to assist you with any questions or issues!</p>
+        </div>
+        
+        <div class="email-section">
+            <div class="email-title">
+                📧 Contact Support
+            </div>
+            <div class="email-address" id="email">
+                premkumardivakaran10@gmail.com
+            </div>
+            <div class="buttons">
+                <a href="mailto:premkumardivakaran10@gmail.com" class="btn btn-primary">
+                    <i class="fas fa-paper-plane"></i>
+                    Send Email
+                </a>
+                <button onclick="copyEmail()" class="btn btn-secondary" id="copyBtn">
+                    <i class="fas fa-copy"></i>
+                    Copy Email
+                </button>
+            </div>
+        </div>
+        
+        <div class="help-section">
+            <div class="help-title">💡 Quick Help</div>
+            <div class="help-grid">
+                <div class="help-card">
+                    <i class="fas fa-file-upload"></i>
+                    <h3>File Upload Issues</h3>
+                    <p>Ensure files are CSV or TXT format, properly formatted with user stories</p>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-search"></i>
+                    <h3>Search Problems</h3>
+                    <p>Try different keywords or check if your documents have been processed</p>
+                </div>
+                <div class="help-card">
+                    <i class="fas fa-cogs"></i>
+                    <h3>Technical Issues</h3>
+                    <p>Refresh the page or check your internet connection</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="back-link">
+            <a href="index.html">
+                <i class="fas fa-arrow-left"></i>
+                Back to QA Bot
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function copyEmail() {
+            const email = 'premkumardivakaran10@gmail.com';
+            const copyBtn = document.getElementById('copyBtn');
+            
+            navigator.clipboard.writeText(email).then(() => {
+                const originalHtml = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.style.background = '#4caf50';
+                copyBtn.style.color = 'white';
+                copyBtn.style.borderColor = '#4caf50';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHtml;
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
+                    copyBtn.style.borderColor = '';
+                }, 2000);
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = email;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                const originalHtml = copyBtn.innerHTML;
+                copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                copyBtn.style.background = '#4caf50';
+                copyBtn.style.color = 'white';
+                
+                setTimeout(() => {
+                    copyBtn.innerHTML = originalHtml;
+                    copyBtn.style.background = '';
+                    copyBtn.style.color = '';
+                }, 2000);
+            });
+        }
+    </script>
+</body>
+</html>

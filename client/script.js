@@ -1,11 +1,58 @@
+// Global functions for support page
+function copyEmailAddress() {
+    const email = 'premkumardivakaran10@gmail.com';
+    navigator.clipboard.writeText(email).then(() => {
+        // Show success feedback
+        const button = event.target.closest('.action-btn');
+        const originalHtml = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.style.background = '#28a745';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHtml;
+            button.style.background = '';
+        }, 2000);
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = email;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const button = event.target.closest('.action-btn');
+        const originalHtml = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.style.background = '#28a745';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHtml;
+            button.style.background = '';
+        }, 2000);
+    });
+}
+
+// Function for copying to clipboard with feedback
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        console.log('Text copied to clipboard');
+    }).catch(err => {
+        console.error('Failed to copy text: ', err);
+    });
+}
+
 class QABotClient {
     constructor() {
         try {
             console.log('Initializing QA Bot Client...');
             this.apiBaseUrl = 'http://localhost:8787';
             this.currentTab = 'ingestion';
+            this.currentView = 'dashboard';
             this.initializeElements();
             this.setupEventListeners();
+            this.setupSidebarNavigation();
+            this.initializeHybridControls();
             this.checkServerStatus();
             this.progressTimer = null;
             this.startTime = null;
@@ -58,6 +105,11 @@ class QABotClient {
             this.retrievalForm = document.getElementById('retrievalForm');
             this.userStoryInput = document.getElementById('userStoryInput');
             this.relevantStoriesLimit = document.getElementById('relevantStoriesLimit');
+            this.searchMode = document.getElementById('searchMode');
+            this.hybridControls = document.getElementById('hybridControls');
+            this.searchBalance = document.getElementById('searchBalance');
+            this.vectorWeight = document.getElementById('vectorWeight');
+            this.bm25Weight = document.getElementById('bm25Weight');
             this.retrieveBtn = document.getElementById('retrieveBtn');
 
             // Retrieval progress elements
@@ -97,6 +149,15 @@ class QABotClient {
             // Retrieval form
             if (this.retrievalForm) {
                 this.retrievalForm.addEventListener('submit', (e) => this.handleRetrievalSubmit(e));
+            }
+
+            // Hybrid search controls
+            if (this.searchMode) {
+                this.searchMode.addEventListener('change', (e) => this.handleSearchModeChange(e));
+            }
+            
+            if (this.searchBalance) {
+                this.searchBalance.addEventListener('input', (e) => this.handleSearchBalanceChange(e));
             }
 
             // Retrieval action buttons
@@ -147,6 +208,73 @@ class QABotClient {
         } catch (error) {
             console.error('Error setting up event listeners:', error);
             throw error;
+        }
+    }
+
+    setupSidebarNavigation() {
+        try {
+            console.log('Setting up sidebar navigation...');
+            
+            // Setup sidebar navigation links
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                // Skip external links (like support.html) that should work normally
+                const href = link.getAttribute('href');
+                if (href && (href.includes('.html') || href.startsWith('mailto:') || href.startsWith('http'))) {
+                    return; // Let external links work normally without preventDefault
+                }
+                
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const view = link.getAttribute('data-view');
+                    if (view) {
+                        this.switchView(view);
+                    }
+                });
+            });
+            
+            console.log('Sidebar navigation set up successfully');
+        } catch (error) {
+            console.error('Error setting up sidebar navigation:', error);
+            throw error;
+        }
+    }
+
+    switchView(viewName) {
+        try {
+            console.log(`Switching to view: ${viewName}`);
+            
+            // Update current view
+            this.currentView = viewName;
+            
+            // Hide all views
+            const allViews = document.querySelectorAll('.content-view');
+            allViews.forEach(view => view.classList.remove('active'));
+            
+            // Show selected view
+            const targetView = document.getElementById(`${viewName}-view`);
+            if (targetView) {
+                targetView.classList.add('active');
+            }
+            
+            // Update navigation active state
+            const allNavLinks = document.querySelectorAll('.nav-link');
+            allNavLinks.forEach(link => link.classList.remove('active'));
+            
+            const activeNavLink = document.querySelector(`[data-view="${viewName}"]`);
+            if (activeNavLink) {
+                activeNavLink.classList.add('active');
+            }
+            
+            // Handle view-specific logic
+            if (viewName === 'user-story-retrieval') {
+                // Reset to ingestion tab when entering user story retrieval
+                this.switchTab('ingestion');
+            }
+            
+            console.log(`Successfully switched to view: ${viewName}`);
+        } catch (error) {
+            console.error(`Error switching to view ${viewName}:`, error);
         }
     }
 
@@ -448,6 +576,9 @@ class QABotClient {
         
         const userInput = this.userStoryInput.value.trim();
         const limit = parseInt(this.relevantStoriesLimit.value);
+        const searchMode = this.searchMode.value;
+        const vectorWeight = parseInt(this.searchBalance.value) / 100;
+        const bm25Weight = 1 - vectorWeight;
 
         if (!userInput) {
             this.showNotification('Please enter a user story', 'error');
@@ -459,7 +590,10 @@ class QABotClient {
         try {
             const requestBody = {
                 userInput: userInput,
-                relevantStoriesLimit: limit
+                relevantStoriesLimit: limit,
+                searchMode: searchMode,
+                vectorWeight: searchMode === 'hybrid' ? vectorWeight : (searchMode === 'vector' ? 1.0 : 0.0),
+                bm25Weight: searchMode === 'hybrid' ? bm25Weight : (searchMode === 'bm25' ? 1.0 : 0.0)
             };
 
             const response = await fetch(`${this.apiBaseUrl}/retrieve/user-stories`, {
@@ -634,11 +768,45 @@ class QABotClient {
         try {
             if (this.userStoryInput) this.userStoryInput.value = '';
             if (this.relevantStoriesLimit) this.relevantStoriesLimit.value = '5';
+            if (this.searchMode) this.searchMode.value = 'hybrid';
+            if (this.searchBalance) this.searchBalance.value = '50';
             if (this.retrievalResultsSection) this.retrievalResultsSection.style.display = 'none';
             this.hideRetrievalProgress();
+            this.updateSearchWeights();
+            this.handleSearchModeChange();
             this.lastRetrievalResult = null;
         } catch (error) {
             console.error('Error resetting retrieval form:', error);
+        }
+    }
+
+    // Hybrid Search Control Methods
+    initializeHybridControls() {
+        // Initialize the hybrid controls visibility and values
+        this.handleSearchModeChange();
+        this.updateSearchWeights();
+    }
+
+    handleSearchModeChange() {
+        const searchMode = this.searchMode?.value || 'hybrid';
+        if (this.hybridControls) {
+            this.hybridControls.style.display = searchMode === 'hybrid' ? 'flex' : 'none';
+        }
+    }
+
+    handleSearchBalanceChange() {
+        this.updateSearchWeights();
+    }
+
+    updateSearchWeights() {
+        const vectorPercentage = parseInt(this.searchBalance?.value || 50);
+        const bm25Percentage = 100 - vectorPercentage;
+        
+        if (this.vectorWeight) {
+            this.vectorWeight.textContent = `${vectorPercentage}%`;
+        }
+        if (this.bm25Weight) {
+            this.bm25Weight.textContent = `${bm25Percentage}%`;
         }
     }
 
@@ -787,3 +955,66 @@ window.addEventListener('unhandledrejection', (event) => {
         window.qaBotClient.showNotification('An unexpected error occurred', 'error');
     }
 });
+
+// Global function for action cards
+function switchView(viewName) {
+    if (window.qaBotClient) {
+        window.qaBotClient.switchView(viewName);
+    }
+}
+
+// Global function to copy text to clipboard
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+        // Show success feedback
+        const btn = event.target.closest('.copy-btn');
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check"></i>';
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #34d399 100%)';
+        
+        // Show temporary success message
+        const emailBox = btn.closest('.email-box');
+        const successMsg = document.createElement('div');
+        successMsg.textContent = 'Email copied to clipboard!';
+        successMsg.style.cssText = `
+            position: absolute;
+            top: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #10b981;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            z-index: 1000;
+            animation: fadeInOut 2s ease;
+        `;
+        
+        emailBox.style.position = 'relative';
+        emailBox.appendChild(successMsg);
+        
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.style.background = 'linear-gradient(135deg, #5dade2 0%, #87ceeb 100%)';
+            if (successMsg.parentNode) {
+                successMsg.parentNode.removeChild(successMsg);
+            }
+        }, 2000);
+    }).catch(() => {
+        // Fallback for older browsers
+        alert('Email: ' + text);
+    });
+}
+
+// Add CSS animation for success message
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes fadeInOut {
+        0% { opacity: 0; transform: translateX(-50%) translateY(10px); }
+        20% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+        100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+    }
+`;
+document.head.appendChild(style);

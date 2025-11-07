@@ -59,6 +59,9 @@ export class UserStoryVectorStore {
         embeddingKey: "embedding"
       });
 
+      // Ensure text search index exists for BM25 functionality
+      await this.ensureTextIndex(collection);
+
       logger.detailed('vector-store', `Connected to MongoDB Vector Store: ${this.config.dbName}.${this.config.collectionName}`);
     } catch (error) {
       throw new Error(`Failed to initialize vector store: ${error instanceof Error ? error.message : String(error)}`);
@@ -246,6 +249,122 @@ export class UserStoryVectorStore {
   }
 
   /**
+   * BM25 text search across user stories using MongoDB text search
+   */
+  async textSearch(query: string, topK: number = 5): Promise<Array<[Document, number]>> {
+    try {
+      const collection = this.client
+        .db(this.config.dbName)
+        .collection(this.config.collectionName);
+
+      // Perform MongoDB text search
+      const results = await collection.aggregate([
+        {
+          $match: {
+            $text: {
+              $search: query
+            }
+          }
+        },
+        {
+          $addFields: {
+            score: { $meta: "textScore" }
+          }
+        },
+        {
+          $sort: {
+            score: { $meta: "textScore" }
+          }
+        },
+        {
+          $limit: topK
+        }
+      ]).toArray();
+
+      // Convert MongoDB results to LangChain Document format with scores
+      return results.map(doc => {
+        const document = new Document({
+          pageContent: doc.text || doc.pageContent || '',
+          metadata: doc.metadata || {}
+        });
+        
+        // Normalize BM25 score to be similar to vector scores (0-1 range)
+        const normalizedScore = Math.min(doc.score / 10, 1);
+        
+        return [document, normalizedScore];
+      });
+    } catch (error) {
+      throw new Error(`Text search failed: ${error instanceof Error ? error.message : String(error)}`);
+    }
+  }
+
+  /**
+   * Hybrid search combining vector search and BM25 text search
+   */
+  async hybridSearch(
+    query: string, 
+    topK: number = 5, 
+    vectorWeight: number = 0.5, 
+    bm25Weight: number = 0.5
+  ): Promise<Array<[Document, number]>> {
+    // Normalize weights
+    const totalWeight = vectorWeight + bm25Weight;
+    const normalizedVectorWeight = vectorWeight / totalWeight;
+    const normalizedBM25Weight = bm25Weight / totalWeight;
+
+    // Get more results from each search to allow for better hybrid ranking
+    const searchLimit = Math.max(topK * 2, 10);
+
+    // Perform both searches in parallel
+    const [vectorResults, textResults] = await Promise.all([
+      this.searchWithScores(query, searchLimit),
+      this.textSearch(query, searchLimit)
+    ]);
+
+    // Create a map to store combined scores by document ID
+    const scoreMap = new Map<string, { document: Document, vectorScore: number, bm25Score: number, hybridScore: number }>();
+
+    // Process vector search results
+    for (const [doc, score] of vectorResults) {
+      const docId = doc.metadata.storyId || doc.pageContent.substring(0, 100);
+      scoreMap.set(docId, {
+        document: doc,
+        vectorScore: score,
+        bm25Score: 0,
+        hybridScore: score * normalizedVectorWeight
+      });
+    }
+
+    // Process text search results and combine scores
+    for (const [doc, score] of textResults) {
+      const docId = doc.metadata.storyId || doc.pageContent.substring(0, 100);
+      
+      if (scoreMap.has(docId)) {
+        // Document found in both searches - update with BM25 score
+        const existing = scoreMap.get(docId)!;
+        existing.bm25Score = score;
+        existing.hybridScore = (existing.vectorScore * normalizedVectorWeight) + (score * normalizedBM25Weight);
+      } else {
+        // Document only found in text search
+        scoreMap.set(docId, {
+          document: doc,
+          vectorScore: 0,
+          bm25Score: score,
+          hybridScore: score * normalizedBM25Weight
+        });
+      }
+    }
+
+    // Sort by hybrid score and return top results
+    const sortedResults = Array.from(scoreMap.values())
+      .sort((a, b) => b.hybridScore - a.hybridScore)
+      .slice(0, topK)
+      .map(item => [item.document, item.hybridScore] as [Document, number]);
+
+    return sortedResults;
+  }
+
+  /**
    * Clear all documents from the collection
    */
   async clearCollection(): Promise<void> {
@@ -419,5 +538,43 @@ export class UserStoryVectorStore {
       throw new Error("Vector store not initialized. Call initialize() first.");
     }
     return this.vectorStore;
+  }
+
+  /**
+   * Ensure text search index exists for BM25 functionality
+   */
+  private async ensureTextIndex(collection: any): Promise<void> {
+    try {
+      // Check if text index already exists
+      const indexes = await collection.listIndexes().toArray();
+      const hasTextIndex = indexes.some((index: any) => index.key && index.key._fts === 'text');
+      
+      if (!hasTextIndex) {
+        // Create text index on text fields for BM25 search
+        await collection.createIndex(
+          {
+            text: "text",
+            "metadata.title": "text", 
+            "metadata.description": "text",
+            "metadata.fullContent": "text"
+          },
+          {
+            name: "text_search_index",
+            weights: {
+              "metadata.title": 10,
+              "metadata.description": 5,
+              "metadata.fullContent": 1,
+              "text": 1
+            }
+          }
+        );
+        logger.detailed('vector-store', "Created text search index for BM25 functionality");
+      } else {
+        logger.detailed('vector-store', "Text search index already exists");
+      }
+    } catch (error) {
+      logger.detailed('vector-store', `Warning: Could not create text index: ${error instanceof Error ? error.message : String(error)}`);
+      // Don't fail initialization if text index creation fails
+    }
   }
 }

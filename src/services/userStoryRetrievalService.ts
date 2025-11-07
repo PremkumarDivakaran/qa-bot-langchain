@@ -51,12 +51,15 @@ export class UserStoryRetrievalService {
   }
 
   /**
-   * Retrieve and standardize user stories
+   * Retrieve and standardize user stories with hybrid search support
    */
   async retrieveUserStories(
     userInput: string, 
     relevantStoriesLimit: number = 5, 
-    traceId: string
+    traceId: string,
+    searchMode: "vector" | "bm25" | "hybrid" = "hybrid",
+    vectorWeight: number = 50,
+    bm25Weight: number = 50
   ): Promise<UserStoryRetrievalResponse> {
     // Overview logging: Start retrieval process and show main steps
     logger.status(traceId, "=== USER STORY RETRIEVAL PROCESS STARTED ===", "🚀");
@@ -71,11 +74,16 @@ export class UserStoryRetrievalService {
     const startTime = Date.now();
 
     try {
-      // Step 3: Perform vector search (with potential re-ranking)
-      logger.status(traceId, "Step 3: Converting input to embeddings and performing vector search", "🔍");
-      logger.detailed(traceId, "Step 3: Starting vector search process", "🔍");
-      const searchResults = await this.performVectorSearch(userInput, relevantStoriesLimit, traceId);
-      logger.detailed(traceId, `Vector search completed - found ${searchResults.length} relevant stories`);
+      // Step 3: Perform search based on search mode
+      logger.status(traceId, `Step 3: Performing ${searchMode} search`, "🔍");
+      logger.detailed(traceId, `Step 3: Starting ${searchMode} search process`, "🔍");
+      
+      if (searchMode === "hybrid") {
+        logger.detailed(traceId, `Hybrid search weights - Vector: ${vectorWeight}%, BM25: ${bm25Weight}%`);
+      }
+      
+      const searchResults = await this.performSearch(userInput, relevantStoriesLimit, traceId, searchMode, vectorWeight, bm25Weight);
+      logger.detailed(traceId, `${searchMode} search completed - found ${searchResults.length} relevant stories`);
 
       // Step 5: Format search results for prompt
       logger.status(traceId, "Step 5: Formatting search results for LLM prompt", "📋");
@@ -294,6 +302,113 @@ Your response (top ${targetCount} document numbers):`;
       logger.error(traceId, "LLM re-ranking failed", error, "❌");
       logger.detailed(traceId, "Falling back to original vector ranking", "🔄");
       return documents.slice(0, targetCount);
+    }
+  }
+
+  /**
+   * Perform search using the specified mode (vector, bm25, or hybrid)
+   */
+  private async performSearch(
+    query: string, 
+    relevantStoriesLimit: number, 
+    traceId: string,
+    searchMode: "vector" | "bm25" | "hybrid" = "hybrid",
+    vectorWeight: number = 50,
+    bm25Weight: number = 50
+  ): Promise<UserStorySearchResult[]> {
+    if (!this.vectorStore) {
+      throw new Error("Vector store not initialized");
+    }
+
+    try {
+      // Determine initial search count based on re-ranking configuration
+      const initialSearchCount = config.llmReranking.enabled 
+        ? config.llmReranking.retrievalTopK 
+        : relevantStoriesLimit;
+
+      logger.detailed(traceId, `LLM Re-ranking: ${config.llmReranking.enabled ? 'ENABLED' : 'DISABLED'}`, "🔧");
+      logger.detailed(traceId, `Initial search count: ${initialSearchCount}`);
+      logger.detailed(traceId, `Final results needed: ${relevantStoriesLimit}`);
+      logger.detailed(traceId, `Search mode: ${searchMode}`);
+
+      let initialDocuments: Array<[Document, number]> = [];
+
+      // Perform search based on the selected mode
+      switch (searchMode) {
+        case "vector":
+          logger.detailed(traceId, "Executing vector similarity search", "🎯");
+          initialDocuments = await this.vectorStore.searchWithScores(query, initialSearchCount);
+          break;
+          
+        case "bm25":
+          logger.detailed(traceId, "Executing BM25 text search", "📝");
+          initialDocuments = await this.vectorStore.textSearch(query, initialSearchCount);
+          break;
+          
+        case "hybrid":
+          logger.detailed(traceId, "Executing hybrid search (vector + BM25)", "⚡");
+          logger.detailed(traceId, `Weights - Vector: ${vectorWeight}%, BM25: ${bm25Weight}%`);
+          // Convert percentages to decimals
+          const vectorWeightDecimal = vectorWeight / 100;
+          const bm25WeightDecimal = bm25Weight / 100;
+          initialDocuments = await this.vectorStore.hybridSearch(query, initialSearchCount, vectorWeightDecimal, bm25WeightDecimal);
+          break;
+          
+        default:
+          throw new Error(`Unsupported search mode: ${searchMode}`);
+      }
+      
+      logger.detailed(traceId, `${searchMode} search returned ${initialDocuments.length} initial results`);
+      
+      // Convert to Document array for compatibility with existing code
+      const documentsWithScores = initialDocuments.map(([doc, score]) => {
+        // Add score to metadata
+        doc.metadata.score = score;
+        return doc;
+      });
+      
+      // Log initial results summary
+      if (documentsWithScores.length > 0) {
+        logger.detailed(traceId, "Initial Results Summary:", "📋");
+        documentsWithScores.slice(0, 5).forEach((doc, index) => {
+          const storyId = doc.metadata.storyId || `STORY-${index + 1}`;
+          const title = doc.metadata.title || doc.pageContent.substring(0, 50) + '...';
+          const score = doc.metadata.score || 0;
+          logger.detailed(traceId, `  ${index + 1}. ${storyId} - "${title}" (score: ${score.toFixed(3)})`);
+        });
+        if (documentsWithScores.length > 5) {
+          logger.detailed(traceId, `  ... and ${documentsWithScores.length - 5} more results`);
+        }
+      }
+
+      let finalDocuments = documentsWithScores;
+
+      // Step 4: Apply LLM re-ranking if enabled
+      if (config.llmReranking.enabled && documentsWithScores.length > relevantStoriesLimit) {
+        logger.status(traceId, "Step 4: Applying LLM re-ranking to improve relevance", "🤖");
+        logger.detailed(traceId, "Step 4: Starting LLM re-ranking process", "🤖");
+        finalDocuments = await this.performLLMReranking(query, documentsWithScores, relevantStoriesLimit, traceId);
+        
+        logger.detailed(traceId, `LLM re-ranking completed. Final count: ${finalDocuments.length}`);
+      } else {
+        // No re-ranking, just limit the results
+        finalDocuments = documentsWithScores.slice(0, relevantStoriesLimit);
+      }
+
+      // Convert documents to UserStorySearchResult format
+      return finalDocuments.map((doc, index) => ({
+        storyId: doc.metadata.storyId || `${searchMode.toUpperCase()}-STORY-${index + 1}`,
+        title: doc.metadata.title || `User Story ${index + 1}`,
+        description: doc.pageContent,
+        priority: doc.metadata.priority || 'Medium',
+        category: doc.metadata.category || 'Uncategorized',
+        fullContent: doc.pageContent,
+        fileName: doc.metadata.fileName || 'uploaded_file',
+        score: doc.metadata.score || 0.8
+      }));
+    } catch (error) {
+      logger.detailed(traceId, `${searchMode} search error: ${error instanceof Error ? error.message : String(error)}`, "❌");
+      throw new Error(`${searchMode} search failed: ${error instanceof Error ? error.message : String(error)}`);
     }
   }
 
@@ -627,7 +742,7 @@ You are an expert assistant with in-depth knowledge of QA, software testing, and
         logger.detailed('Domain analysis', `Domain mismatch: ${domainAnalysis.inputDomain} vs ${domainAnalysis.contextDomain} - applying penalty`);
       }
     } else {
-      score += 5; // Small bonus if no vector results (no context to mismatch)
+      score += 5; // Small bonus if no vector results (no context to mismatch with)
     }
     
     // CRITICAL: LLM response quality - these are REQUIRED fields, not optional bonuses
