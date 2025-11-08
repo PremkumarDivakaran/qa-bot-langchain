@@ -864,11 +864,15 @@ class QABotClient {
         const vectorPercentage = parseInt(this.searchBalance?.value || 50);
         const bm25Percentage = 100 - vectorPercentage;
         
+        // Convert to decimal values for display
+        const vectorDecimal = (vectorPercentage / 100).toFixed(1);
+        const bm25Decimal = (bm25Percentage / 100).toFixed(1);
+        
         if (this.vectorWeight) {
-            this.vectorWeight.textContent = `${vectorPercentage}%`;
+            this.vectorWeight.textContent = vectorDecimal;
         }
         if (this.bm25Weight) {
-            this.bm25Weight.textContent = `${bm25Percentage}%`;
+            this.bm25Weight.textContent = bm25Decimal;
         }
     }
 

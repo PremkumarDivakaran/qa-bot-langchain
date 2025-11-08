@@ -2,6 +2,7 @@ import "dotenv/config";
 import express from "express";
 import multer from "multer";
 import { MongoClient } from "mongodb";
+import { ZodError } from "zod";
 import { createChatModel, getModelInfo } from "./lib/models/index.js";
 import { 
   ErrorResponse,
@@ -218,8 +219,8 @@ app.post("/retrieve/user-stories", async (req, res) => {
     logger.detailed(traceId, `User Input: "${parsed.userInput}"`);
     logger.detailed(traceId, `Relevant Stories Limit: ${parsed.relevantStoriesLimit}`);
     logger.detailed(traceId, `Search Mode: ${parsed.searchMode}`);
-    logger.detailed(traceId, `Vector Weight: ${parsed.vectorWeight}%`);
-    logger.detailed(traceId, `BM25 Weight: ${parsed.bm25Weight}%`);
+    logger.detailed(traceId, `Vector Weight: ${parsed.vectorWeight}`);
+    logger.detailed(traceId, `BM25 Weight: ${parsed.bm25Weight}`);
 
     // Check if retrieval service is initialized
     if (!retrievalService) {
@@ -232,8 +233,8 @@ app.post("/retrieve/user-stories", async (req, res) => {
       parsed.relevantStoriesLimit || 5,
       traceId,
       parsed.searchMode || "hybrid",
-      parsed.vectorWeight || 50,
-      parsed.bm25Weight || 50
+      parsed.vectorWeight || 0.5,
+      parsed.bm25Weight || 0.5
     );
 
     const duration = Date.now() - startTime;
@@ -251,20 +252,52 @@ app.post("/retrieve/user-stories", async (req, res) => {
   } catch (err: any) {
     const duration = Date.now() - startTime;
     
-    console.error(`\n[${traceId}] === RETRIEVAL ERROR ===`);
-    console.error(`Error:`, err.message ?? String(err));
-    console.error(`Duration: ${duration}ms`);
-    console.error(`Stack:`, err.stack);
-    console.error(`====================================\n`);
+    // Handle different types of errors with appropriate status codes
+    let statusCode = 500; // Default to internal server error
+    let errorMessage = err.message ?? String(err);
+    
+    if (err instanceof ZodError) {
+      // Validation error - return 400 Bad Request
+      statusCode = 400;
+      errorMessage = err.errors.map(e => e.message).join('; ');
+      
+      console.error(`\n[${traceId}] === VALIDATION ERROR ===`);
+      console.error(`Validation errors:`, err.errors);
+      console.error(`Duration: ${duration}ms`);
+      console.error(`====================================\n`);
+    } else if (errorMessage.includes("searchMode") || errorMessage.includes("Weight")) {
+      // Custom validation errors from our refine method - return 400 Bad Request
+      statusCode = 400;
+      
+      console.error(`\n[${traceId}] === PARAMETER VALIDATION ERROR ===`);
+      console.error(`Error:`, errorMessage);
+      console.error(`Duration: ${duration}ms`);
+      console.error(`====================================\n`);
+    } else if (errorMessage.includes("not initialized")) {
+      // Service initialization error - return 503 Service Unavailable
+      statusCode = 503;
+      
+      console.error(`\n[${traceId}] === SERVICE UNAVAILABLE ERROR ===`);
+      console.error(`Error:`, errorMessage);
+      console.error(`Duration: ${duration}ms`);
+      console.error(`====================================\n`);
+    } else {
+      // General server error - return 500 Internal Server Error
+      console.error(`\n[${traceId}] === RETRIEVAL ERROR ===`);
+      console.error(`Error:`, errorMessage);
+      console.error(`Duration: ${duration}ms`);
+      console.error(`Stack:`, err.stack);
+      console.error(`====================================\n`);
+    }
 
     const errorResponse: UserStoryRetrievalErrorResponse = {
-      error: err.message ?? String(err),
+      error: errorMessage,
       details: err.stack,
       timestamp: new Date().toISOString(),
       traceId
     };
 
-    res.status(400).json(errorResponse);
+    res.status(statusCode).json(errorResponse);
   }
 });
 
