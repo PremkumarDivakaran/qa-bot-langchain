@@ -3,23 +3,23 @@ import express from "express";
 import multer from "multer";
 import { MongoClient } from "mongodb";
 import { ZodError } from "zod";
-import { createChatModel, getModelInfo } from "./lib/models/index.js";
+import { createChatModel, getModelInfo } from "./infrastructure/lib/models/index.js";
 import { 
   ErrorResponse,
   UserStoryRetrievalRequestSchema,
   UserStoryRetrievalRequest,
   UserStoryRetrievalResponse,
   UserStoryRetrievalErrorResponse
-} from "./types/index.js";
-import { config } from "./config/index.js";
-import { logger } from "./utils/logger.js";
+} from "./shared/types/index.js";
+import { config } from "./shared/config/index.js";
+import { logger } from "./shared/utils/logger.js";
 import { 
   runUserStoryIngestion, 
   saveUploadedFile, 
   validateFileType,
   type IngestionResult 
-} from "./utils/ingestionRunner.js";
-import { UserStoryRetrievalService } from "./services/userStoryRetrievalService.js";
+} from "./core/ingestion/utils/ingestionRunner.js";
+import { UserStoryRetrievalService } from "./core/retrieval/services/userStoryRetrievalService.js";
 
 const app = express();
 

@@ -410,7 +410,7 @@ class QABotClient {
         this.fileName.textContent = file.name;
         this.fileSize.textContent = this.formatFileSize(file.size);
         this.filePreview.style.display = 'block';
-        this.uploadBtn.disabled = false;
+        this.enableUploadButton();
 
         // Hide the drop zone content
         const dropZoneContent = this.dropZone.querySelector('.drop-zone-content');
@@ -422,7 +422,7 @@ class QABotClient {
     clearFileSelection() {
         this.fileInput.value = '';
         this.filePreview.style.display = 'none';
-        this.uploadBtn.disabled = true;
+        this.resetUploadButton();
 
         // Show the drop zone content again
         const dropZoneContent = this.dropZone.querySelector('.drop-zone-content');
@@ -439,6 +439,38 @@ class QABotClient {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     }
 
+    disableUploadButton() {
+        this.uploadBtn.disabled = true;
+        this.uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+        this.uploadBtn.classList.add('processing');
+    }
+
+    enableUploadButton() {
+        this.uploadBtn.disabled = false;
+        this.uploadBtn.innerHTML = '<i class="fas fa-upload"></i><span>Upload & Process</span>';
+        this.uploadBtn.classList.remove('processing');
+    }
+
+    resetUploadButton() {
+        this.uploadBtn.disabled = true;
+        this.uploadBtn.innerHTML = '<i class="fas fa-upload"></i><span>Upload & Process</span>';
+        this.uploadBtn.classList.remove('processing');
+    }
+
+    disableRetrievalButton() {
+        console.log('Disabling retrieval button - setting processing state');
+        this.retrieveBtn.disabled = true;
+        this.retrieveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i><span>Processing...</span>';
+        this.retrieveBtn.classList.add('processing');
+    }
+
+    enableRetrievalButton() {
+        console.log('Enabling retrieval button - removing processing state');
+        this.retrieveBtn.disabled = false;
+        this.retrieveBtn.innerHTML = '<i class="fas fa-magic"></i><span>Generate Standardized User Story</span>';
+        this.retrieveBtn.classList.remove('processing');
+    }
+
     async handleFormSubmit(event) {
         event.preventDefault();
         
@@ -447,6 +479,9 @@ class QABotClient {
             this.showNotification('Please select a file', 'error');
             return;
         }
+
+        // Disable button to prevent multiple submissions
+        this.disableUploadButton();
 
         try {
             this.showProgress();
@@ -496,6 +531,8 @@ class QABotClient {
             this.showResults({ error: error.message }, false);
         } finally {
             this.stopProgressTimer();
+            // Re-enable button after processing completes
+            this.enableUploadButton();
         }
     }
 
@@ -591,8 +628,267 @@ class QABotClient {
     }
 
     viewProcessedData() {
-        // This could open a new window or navigate to a data viewer
-        window.open(`${this.apiBaseUrl}/admin/data`, '_blank');
+        console.log('viewProcessedData called');
+        try {
+            this.showProcessedDataModal();
+        } catch (error) {
+            console.error('Error in viewProcessedData:', error);
+            alert('An error occurred while trying to show processed data: ' + error.message);
+        }
+    }
+
+    async showProcessedDataModal() {
+        try {
+            console.log('Starting to fetch processed data...');
+            
+            // Create and show loading overlay
+            this.showLoadingOverlay('Loading processed data...');
+
+            // Fetch data from admin endpoint
+            const response = await fetch(`${this.apiBaseUrl}/admin/data?limit=100`);
+            
+            console.log('Response received:', response.status);
+            
+            if (!response.ok) {
+                throw new Error(`Failed to fetch data: ${response.status}`);
+            }
+
+            const data = await response.json();
+            
+            console.log('Data fetched successfully:', data);
+            
+            // Hide loading overlay
+            this.hideLoadingOverlay();
+
+            // Create and show the modal
+            this.createDataViewModal(data);
+
+        } catch (error) {
+            console.error('Error in showProcessedDataModal:', error);
+            this.hideLoadingOverlay();
+            console.error('Error fetching processed data:', error);
+            
+            // Show error modal
+            this.createErrorModal('Failed to load processed data', error.message);
+        }
+    }
+
+    createDataViewModal(data) {
+        try {
+            console.log('Creating data view modal with data:', data);
+            
+            // Remove existing modal if any
+            const existingModal = document.getElementById('dataModal');
+            if (existingModal) {
+                existingModal.remove();
+            }
+
+            const userStories = data.data?.userStories || [];
+            const pagination = data.data?.pagination || { total: 0 };
+
+            console.log(`Found ${userStories.length} user stories to display`);
+
+            // Create modal HTML
+            const modalHTML = `
+                <div id="dataModal" class="data-modal-overlay">
+                    <div class="data-modal">
+                        <div class="data-modal-header">
+                            <h2><i class="fas fa-database"></i> Processed User Stories Data</h2>
+                            <button class="data-modal-close" onclick="this.closest('.data-modal-overlay').remove()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="data-modal-body">
+                            <!-- Stats -->
+                            <div class="data-stats">
+                                <div class="stat-card">
+                                    <div class="stat-number">${pagination.total || 0}</div>
+                                    <div class="stat-label">Total Stories</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${userStories.filter(s => s.priority === 'high').length}</div>
+                                    <div class="stat-label">High Priority</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${userStories.filter(s => s.priority === 'medium').length}</div>
+                                    <div class="stat-label">Medium Priority</div>
+                                </div>
+                                <div class="stat-card">
+                                    <div class="stat-number">${userStories.filter(s => s.priority === 'critical').length}</div>
+                                    <div class="stat-label">Critical Priority</div>
+                                </div>
+                            </div>
+
+                            ${userStories.length > 0 ? `
+                            <!-- Data Table -->
+                            <div class="data-table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Story ID</th>
+                                            <th>Title</th>
+                                            <th>Description</th>
+                                            <th>Priority</th>
+                                            <th>Category</th>
+                                            <th>Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${userStories.map(story => `
+                                        <tr>
+                                            <td><span class="story-id">${this.escapeHtml(story.storyId || 'N/A')}</span></td>
+                                            <td>${this.escapeHtml(story.title || 'No title')}</td>
+                                            <td class="description" title="${this.escapeHtml(story.description || 'No description')}">${this.truncateText(story.description || 'No description', 100)}</td>
+                                            <td><span class="priority-badge priority-${(story.priority || 'medium').toLowerCase()}">${this.escapeHtml(story.priority || 'Medium')}</span></td>
+                                            <td>${this.escapeHtml(story.category || 'General')}</td>
+                                            <td><span class="score-badge">${(story.score || 0).toFixed(2)}</span></td>
+                                        </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                            ` : `
+                            <div class="no-data">
+                                <i class="fas fa-inbox"></i>
+                                <h3>No User Stories Found</h3>
+                                <p>No processed user stories are available in the database.</p>
+                                <p>Upload some CSV or TXT files to see data here.</p>
+                            </div>
+                            `}
+                        </div>
+
+                        <div class="data-modal-footer">
+                            <button class="btn-secondary" onclick="location.reload()">
+                                <i class="fas fa-sync-alt"></i>
+                                Refresh
+                            </button>
+                            <button class="btn-primary" onclick="this.closest('.data-modal-overlay').remove()">
+                                <i class="fas fa-check"></i>
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Add modal to DOM
+            document.body.insertAdjacentHTML('beforeend', modalHTML);
+            
+            console.log('Modal added to DOM');
+
+            // Add click outside to close
+            const modal = document.getElementById('dataModal');
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
+
+            // Add escape key to close
+            const escapeHandler = (e) => {
+                if (e.key === 'Escape') {
+                    modal.remove();
+                    document.removeEventListener('keydown', escapeHandler);
+                }
+            };
+            document.addEventListener('keydown', escapeHandler);
+            
+            console.log('Modal event listeners added');
+            
+        } catch (error) {
+            console.error('Error creating data view modal:', error);
+            this.createErrorModal('Modal Creation Error', `Failed to create the data view: ${error.message}`);
+        }
+    }
+
+    // Loading overlay methods
+    showLoadingOverlay(message = 'Loading...') {
+        console.log('Showing loading overlay with message:', message);
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            const messageElement = overlay.querySelector('p');
+            if (messageElement) {
+                messageElement.textContent = message;
+            }
+            overlay.style.display = 'flex';
+        } else {
+            console.error('Loading overlay element not found');
+        }
+    }
+
+    hideLoadingOverlay() {
+        console.log('Hiding loading overlay');
+        const overlay = document.getElementById('loadingOverlay');
+        if (overlay) {
+            overlay.style.display = 'none';
+        } else {
+            console.error('Loading overlay element not found when trying to hide');
+        }
+    }
+
+    // Helper function to escape HTML
+    escapeHtml(text) {
+        if (!text) return '';
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.toString().replace(/[&<>"']/g, (m) => map[m]);
+    }
+
+    // Helper function to truncate text
+    truncateText(text, maxLength) {
+        if (!text) return '';
+        if (text.length <= maxLength) return this.escapeHtml(text);
+        return this.escapeHtml(text.substring(0, maxLength)) + '...';
+    }
+
+    createErrorModal(title, message) {
+        // Remove existing modal if any
+        const existingModal = document.getElementById('errorModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        const modalHTML = `
+            <div id="errorModal" class="data-modal-overlay">
+                <div class="data-modal error-modal">
+                    <div class="data-modal-header">
+                        <h2><i class="fas fa-exclamation-triangle"></i> ${title}</h2>
+                        <button class="data-modal-close" onclick="this.closest('.data-modal-overlay').remove()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="data-modal-body">
+                        <div class="error-content">
+                            <p>${message}</p>
+                            <div class="error-suggestion">
+                                <p><strong>Suggestions:</strong></p>
+                                <ul>
+                                    <li>Make sure the server is running</li>
+                                    <li>Check if any user stories have been uploaded</li>
+                                    <li>Try refreshing the page</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="data-modal-footer">
+                        <button class="btn-primary" onclick="this.closest('.data-modal-overlay').remove()">
+                            <i class="fas fa-check"></i>
+                            OK
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
     // Tab Management
@@ -647,6 +943,9 @@ class QABotClient {
             return;
         }
 
+        // Disable button to prevent multiple submissions
+        console.log('Starting retrieval process - disabling button');
+        this.disableRetrievalButton();
         this.startRetrievalProgress();
 
         try {
@@ -684,7 +983,6 @@ class QABotClient {
     startRetrievalProgress() {
         this.retrievalProgressSection.style.display = 'block';
         this.retrievalResultsSection.style.display = 'none';
-        this.retrieveBtn.disabled = true;
         
         this.startTime = Date.now();
         this.progressTimer = setInterval(() => {
@@ -713,7 +1011,7 @@ class QABotClient {
     hideRetrievalProgress() {
         try {
             if (this.retrievalProgressSection) this.retrievalProgressSection.style.display = 'none';
-            if (this.retrieveBtn) this.retrieveBtn.disabled = false;
+            if (this.retrieveBtn) this.enableRetrievalButton();
             
             if (this.progressTimer) {
                 clearInterval(this.progressTimer);

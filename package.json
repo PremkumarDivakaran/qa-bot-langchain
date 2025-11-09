@@ -4,16 +4,16 @@
   "private": true,
   "description": "StoryBot - AI-powered user story processing and document intelligence with LangChain.",
   "type": "module",
-  "main": "dist/server.js",
+  "main": "dist/app.js",
   "engines": {
     "node": ">=18.17"
   },
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch src/app.ts",
     "backend": "npm run stop:backend && npm run start:backend",
     "frontend": "npm run stop:frontend && npm run start:frontend",
     "app": "npm run stop:app && concurrently \"npm run start:backend\" \"npm run start:frontend\" --names \"API,UI\" --prefix name --kill-others-on-fail",
-    "start:backend": "tsx watch src/server.ts",
+    "start:backend": "tsx watch src/app.ts",
     "start:frontend": "cd client && python3 -m http.server 3000",
     "start:app": "npm run app",
     "stop:backend": "./scripts/port-manager.sh stop-backend",
